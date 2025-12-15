@@ -1,5 +1,8 @@
+const Car = require("../models/car");
 const Admin = require('../models/Admin');
 const jwt = require('jsonwebtoken');
+
+
 
 // Admin Login
 exports.adminLogin = async (req, res) => {
@@ -34,4 +37,23 @@ exports.adminLogin = async (req, res) => {
 // Admin Logout
 exports.adminLogout = (req, res) => {
 	res.clearCookie('adminToken').json({ message: 'Admin logged out' });
+};
+
+
+exports.getDashboardData = async (req, res) => {
+  try {
+    const recentCars = await Car.find()
+      .sort({ createdAt: -1 }) // newest first
+      .limit(5);
+
+    res.status(200).json({
+      success: true,
+      recentCars,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };

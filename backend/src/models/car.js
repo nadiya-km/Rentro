@@ -1,68 +1,75 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+
 const carSchema = new mongoose.Schema(
-	{
-		// car: {
-		// 	name: 'string',
-		// 	id: 'string',
-		// 	brand: 'string',
-		// 	fueltype: 'string',
-		// 	location: 'string',
-		// 	seates: 'string',
-		// 	priceperday: 'string',
-		// 	images: '',
-		// 	availability: '',
-		// 	descrpition,
-		// 	review,/rating,
-		// },
-		name: {
-			type: String,
-			required: true,
-		},
-		brand: {
-			type: String,
-			required: true,
-		},
-		model: {
-			type: String,
-			required: true,
-		},
-		fuelType: {
-			type: String,
-			enum: ['Petrol', 'Diesel', 'Electric', 'Hybrid'],
-			required: true,
-		},
-		location: {
-			type: String,
-			required: true,
-		},
-		seats: {
-			type: Number,
-			required: true,
-		},
-		pricePerDay: {
-			type: Number,
-			required: true,
-		},
-		images: {
-			type: [String],
-			required: true,
-		},
-		description: {
-			type: String,
-			required: true,
-		},
-		rating: {
-			type: Number,
-			default: 4.5,
-			min: 1,
-			max: 5,
-		},
-		availability: {
-			type: Boolean,
-			default: true,
-		},
-		// (optionl) colr,milage,fetures ,
-	},
-	{ timestamps: true }
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    year: {
+      type: Number,
+    },
+
+    category: {
+      type: String,
+      enum: ["SUV", "Sedan", "Hatchback", "MUV", "Luxury"],
+      default: "SUV",
+    },
+
+    seats: {
+      type: Number,
+    },
+
+    fuel: {
+      type: String,
+      enum: ["Petrol", "Diesel", "Electric", "Hybrid"],
+      default: "Petrol",
+    },
+
+    transmission: {
+      type: String,
+      enum: ["Automatic", "Manual"],
+      default: "Automatic",
+    },
+
+    price: {
+      type: Number,
+      required: true,
+    },
+
+    status: {
+      type: String,
+      enum: ["Available", "Booked", "Not Available"],
+      default: "Available",
+    },
+
+    description: {
+      type: String,
+      trim: true,
+    },
+
+    features: {
+      type: [String],
+      default: [],
+    },
+
+    //  Cloudinary Image Object
+    image: {
+      url: {
+        type: String,
+        required: true, // Cloudinary secure_url
+      },
+      public_id: {
+        type: String, // needed for delete/update
+        required: true,
+      },
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
-module.exports = mongoose.model('car', carSchema);
+module.exports = mongoose.models.Car || mongoose.model("Car", carSchema);
+
