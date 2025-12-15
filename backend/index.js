@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./src/config/db.js');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const fileUpload = require('express-fileupload');
 
 const authRoutes = require('./src/routes/authRoutes.js');
 const adminRoutes = require('./src/routes/admin');
@@ -22,7 +23,12 @@ app.use(
 		credentials: true, // allow cookies / token in headers
 	})
 );
-
+app.use(
+	fileUpload({
+		useTempFiles: true,
+		tempFileDir: '/tmp/',
+	})
+);
 // connect DB
 connectDB();
 

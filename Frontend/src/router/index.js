@@ -20,7 +20,7 @@ const routes = [
 	{
 		path: '/admin/login',
 		component: AdminLogin,
-		meta: { public: true },
+		meta: { public: true, hideMainNavbar: true },
 	},
 	{
 		path: '/admin/dashboard',

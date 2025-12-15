@@ -9,7 +9,7 @@
     <div class="card shadow mt-4">
       <div class="card-body">
 
-        <form @submit.prevent="submitCar">
+        <form @submit.prevent="submitCar" enctype="multipart/form-data">
 
           <!-- Row 1 -->
           <div class="form-row">
