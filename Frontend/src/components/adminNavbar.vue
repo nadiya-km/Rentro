@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '@/services/api';
 
 export default {
 	name: 'adminNavbar',
@@ -80,7 +80,7 @@ export default {
 			if (!confirmLogout) return; // cancel clicked
 
 			try {
-				await axios.post('http://localhost:3000/api/admin/logout', {}, { withCredentials: true });
+				await api.post('/api/admin/logout', {}, { withCredentials: true });
 
 				this.$router.push('/admin/login');
 			} catch (err) {

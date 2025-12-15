@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api from '@/services/api';
 
 export default {
 	name: 'AdminLogin',
@@ -52,8 +52,8 @@ export default {
 	methods: {
 		async loginAdmin() {
 			try {
-				const res = await axios.post(
-					'http://localhost:3000/api/admin/login',
+				const res = await api.post(
+					'/api/admin/login',
 					{ email: this.email, password: this.password },
 					{ withCredentials: true } // imp
 				);

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import axios from 'axios';
+import api from '@/services/api';
 
 import Home from '../pages/home.vue';
 import Login from '@/pages/login.vue';
@@ -83,7 +83,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
 	if (to.meta.requiresAdmin) {
 		try {
-			await axios.get('http://localhost:3000/api/admin/check-auth', {
+			await api.get('/api/admin/check-auth', {
 				withCredentials: true,
 			});
 			next(); // admin verified
