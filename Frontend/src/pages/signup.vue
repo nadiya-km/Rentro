@@ -97,7 +97,7 @@ export default {
 			}
 
 			try {
-				const res = await api.post('/auth/register', {
+				const res = await api.post('/user/register', {
 					name: this.name,
 					email: this.email,
 					phone: this.phone,
