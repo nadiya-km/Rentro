@@ -1,21 +1,11 @@
 const Car = require("../models/Car");
 const cloudinary = require("../config/cloudinary");
-exports.addCar = async (req, res) => {
-  try {
-    
 
-    const {
-      name,
-      year,
-      category,
-      seats,
-      fuel,
-      transmission,
-      price,
-      status,
-      description,
-      features,
-    } = req.body;
+exports.addCar = async (req, res) => {
+  
+  try { 
+
+    const { name, year, category, seats, fuel, transmission, price, status, description, features, } = req.body;
 
     if (!req.files || !req.files.image) {
       return res.status(400).json({ message: "Image is required" });
@@ -23,29 +13,11 @@ exports.addCar = async (req, res) => {
 
     const imageFile = req.files.image;
 
-    const result = await cloudinary.uploader.upload(
-      imageFile.tempFilePath,
-      { folder: "rentro/cars" }
-    );
+    const result = await cloudinary.uploader.upload(imageFile.tempFilePath, { folder: "rentro/cars" });
 
-    const parsedFeatures = Array.isArray(features)
-      ? features
-      : features
-      ? [features]
-      : [];
+    const parsedFeatures = Array.isArray(features) ? features : features  ? [features]: [];
 
-    const car = await Car.create({
-      name,
-      year,
-      category,
-      seats,
-      fuel,
-      transmission,
-      price,
-      status,
-      description,
-      features: parsedFeatures,
-      image: {
+    const car = await Car.create({  name, year, category, seats, fuel, transmission, price, status, description, features: parsedFeatures, image: {
         url: result.secure_url,
         public_id: result.public_id,
       },
@@ -82,6 +54,7 @@ exports.getRecentCars = async (req, res) => {
 //managecars
 
 exports.getAllCars = async (req, res) => {
+
   try {
     const cars = await Car.find().sort({ createdAt: -1 });
 
@@ -89,9 +62,12 @@ exports.getAllCars = async (req, res) => {
       success: true,
       cars,
     });
+
   } catch (error) {
+
     console.error("GET CARS ERROR:", error);
     res.status(500).json({ message: "Server error" });
+
   }
 };
 
@@ -126,26 +102,27 @@ exports.deleteCar = async (req, res) => {
 exports.updateCar = async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
-
     if (!car) {
       return res.status(404).json({ message: "Car not found" });
     }
 
-    const {
-      name,
-      year,
-      category,
-      seats,
-      fuel,
-      transmission,
-      price,
-      status,
-      description,
-      features,
-    } = req.body;
+    // 🔹 Build update object safely
+    const updateData = {};
 
-    // Update image if provided
+    Object.keys(req.body).forEach(key => {
+      if (req.body[key] !== "") {
+        updateData[key] = req.body[key];
+      }
+    });
+
+    // Handle features array
+    if (req.body["features[]"]) {
+      updateData.features = Array.isArray(req.body["features[]"]) ? req.body["features[]"]: [req.body["features[]"]];
+    }
+
+    // 🔹 Image update (optional)
     if (req.files && req.files.image) {
+      // delete old image
       await cloudinary.uploader.destroy(car.image.public_id);
 
       const result = await cloudinary.uploader.upload(
@@ -153,32 +130,70 @@ exports.updateCar = async (req, res) => {
         { folder: "rentro/cars" }
       );
 
-      car.image = {
+      updateData.image = {
         url: result.secure_url,
         public_id: result.public_id,
       };
     }
 
-    car.name = name;
-    car.year = year;
-    car.category = category;
-    car.seats = seats;
-    car.fuel = fuel;
-    car.transmission = transmission;
-    car.price = price;
-    car.status = status;
-    car.description = description;
-    car.features = Array.isArray(features) ? features : [];
+    const updatedCar = await Car.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateData },
+      { new: true }
+    );
 
-    await car.save();
-
-    res.status(200).json({
+    res.json({
       success: true,
       message: "Car updated successfully",
-      car,
+      car: updatedCar,
     });
   } catch (error) {
     console.error("UPDATE CAR ERROR:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getSingleCar = async (req, res) => {
+  try {
+    const car = await Car.findById(req.params.id);
+
+    if (!car) {
+      return res.status(404).json({ message: "Car not found" });
+    }
+
+    res.json({
+      success: true,
+      car,
+    });
+  } catch (error) {
+    console.error("GET SINGLE CAR ERROR:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+exports.getCarStats = async (req, res) => {
+  try {
+    const totalCars = await Car.countDocuments();
+
+    const availableCars = await Car.countDocuments({
+      status: "Available",
+    });
+
+    const bookedCars = await Car.countDocuments({
+      status: "Booked",
+    });
+
+    res.json({
+      success: true,
+      stats: {
+        totalCars,
+        availableCars,
+        bookedCars,
+      },
+    });
+  } catch (error) {
+    console.error("CAR STATS ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };

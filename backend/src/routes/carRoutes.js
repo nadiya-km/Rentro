@@ -1,16 +1,18 @@
 const express = require("express");
-const { addCar,getRecentCars, getAllCars , deleteCar, updateCar} = require("../controllers/carController");
+const { addCar,getRecentCars, getAllCars , deleteCar, updateCar, getSingleCar , getCarStats} = require("../controllers/carController");
 
 const router = express.Router();
+// STATIC ROUTES FIRST
+router.get("/stats", getCarStats);
+router.get("/recent", getRecentCars);
 
-router.get("/", getAllCars); // GET ALL CARS
+//  COLLECTION ROUTE
+router.get("/", getAllCars);
 
-router.post("/add", addCar);
-
-router.get("/recent", getRecentCars); // ⭐ ADD THIS
-
+//  DYNAMIC ROUTES LAST
+router.get("/:id", getSingleCar);
+router.put("/:id", updateCar);
 router.delete("/:id", deleteCar);
 
-router.put("/:id", updateCar);
-
+router.post("/add", addCar);
 module.exports = router;
