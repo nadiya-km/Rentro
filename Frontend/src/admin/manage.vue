@@ -35,44 +35,60 @@
                   </tr>
                 </thead>
 
-                <tbody>
-                  <tr v-for="(car, index) in cars" :key="index">
-                    <td>{{ index + 1 }}</td>
-                    <td>{{ car.name }}</td>
-                    <td>{{ car.brand }}</td>
-                    <td>{{ car.model }}</td>
-                    <td>₹{{ car.price }}</td>
-                    <td>{{ car.fuel }}</td>
-                    <td>{{ car.seats }}</td>
+               <tbody>
+  <tr v-for="(car, index) in cars" :key="car._id">
+    <td>{{ index + 1 }}</td>
+    <td>{{ car.name }}</td>
+    <td>{{ car.category }}</td>
+    <td>{{ car.year }}</td>
+    <td>₹{{ car.price }}</td>
+    <td>{{ car.fuel }}</td>
+    <td>{{ car.seats }}</td>
 
-                    <td>
-                      <span
-                        :class="[
-                          'badge',
-                          car.status === 'Available' ? 'badge-success' :
-                          car.status === 'Booked' ? 'badge-warning' :
-                          'badge-danger'
-                        ]"
-                      >
-                        {{ car.status }}
-                      </span>
-                    </td>
+    <td>
+      <span
+        class="badge"
+        :class="
+          car.status === 'Available'
+            ? 'badge-success'
+            : car.status === 'Booked'
+            ? 'badge-warning'
+            : 'badge-danger'
+        "
+      >
+        {{ car.status }}
+      </span>
+    </td>
 
-                    <td>
-                      <span v-if="car.status !== 'Available'">
-                        {{ car.returnDate }}
-                      </span>
-                      <span v-else class="text-muted">—</span>
-                    </td>
+    <td class="text-muted">—</td>
 
-                    <td><img :src="car.image" width="60" class="rounded"></td>
+    <td>
+      <img
+        :src="car.image.url"
+        width="60"
+        class="rounded"
+        alt="car"
+      />
+    </td>
 
-                    <td>
-                      <button class="btn btn-sm btn-info" @click="editCar(car)">Edit</button>
-                      <button class="btn btn-sm btn-danger ml-1" @click="deleteCar(index)">Delete</button>
-                    </td>
-                  </tr>
-                </tbody>
+    <td>
+      <button class="btn btn-sm btn-info" @click="editCar(car)">
+        Edit
+      </button>
+      <button
+        class="btn btn-sm btn-danger ml-1"
+        @click="deleteCar(car._id)"
+      >
+        Delete
+      </button>
+    </td>
+  </tr>
+
+  <tr v-if="cars.length === 0">
+    <td colspan="11" class="text-center">No cars found</td>
+  </tr>
+</tbody>
+
 
               </table>
             </div>
@@ -86,47 +102,56 @@
 </template>
 
 <script>
+import axios from "axios";
+import sidebar from "@/components/sidebar.vue";
+
 export default {
+  name: "ManageCars",
+  components: {
+    sidebar,
+  },
+
   data() {
     return {
-      cars: [
-        {
-          name: "Innova Crysta",
-          brand: "Toyota",
-          model: "2021",
-          price: 3000,
-          fuel: "Diesel",
-          seats: 7,
-          status: "Booked",
-          returnDate: "2025-02-12",
-          image: "https://via.placeholder.com/100",
-        },
-        {
-          name: "Swift",
-          brand: "Maruti",
-          model: "2020",
-          price: 1800,
-          fuel: "Petrol",
-          seats: 5,
-          status: "Available",
-          returnDate: "",
-          image: "https://via.placeholder.com/100",
-        }
-      ]
+      cars: [],
     };
   },
 
+  mounted() {
+    this.fetchCars();
+  },
+
   methods: {
-    deleteCar(index) {
-      this.cars.splice(index, 1);
+    async fetchCars() {
+      try {
+        const res = await axios.get("http://localhost:3000/api/cars");
+        this.cars = res.data.cars;
+      } catch (error) {
+        console.error("FETCH CARS ERROR:", error);
+      }
     },
 
     editCar(car) {
-      alert("Edit function coming soon!");
-    }
+      this.$router.push(`/admin/edit-car/${car._id}`);
+    },
+
+
+   async deleteCar(id) {
+  if (!confirm("Are you sure you want to delete this car?")) return;
+
+  try {
+    await axios.delete(`http://localhost:3000/api/cars/${id}`);
+    this.cars = this.cars.filter(car => car._id !== id);
+    alert("Car deleted successfully");
+  } catch (error) {
+    console.error("DELETE ERROR:", error);
+    alert("Failed to delete car");
   }
+}
+  },
 };
 </script>
+
 
 
 <style scoped>

@@ -1,3 +1,64 @@
+<script>
+import axios from "axios";
+import adminNavbar from "@/components/adminNavbar.vue";
+import sidebar from "@/components/sidebar.vue";
+
+export default {
+  name: "AdminDashboard",
+  components: {
+    adminNavbar,
+    sidebar,
+  },
+
+  data() {
+  return {
+    recentCars: [],
+    stats: {
+      totalCars: 0,
+      availableCars: 0,
+      bookedCars: 0,
+    },
+  };
+},
+
+
+ mounted() {
+  this.fetchRecentCars();
+  this.fetchCarStats();
+},
+
+  methods: {
+    async fetchRecentCars() {
+      try {
+        const res = await axios.get(
+          "http://localhost:3000/api/cars/recent"
+        );
+        this.recentCars = res.data.cars;
+      } catch (error) {
+        console.error("Failed to fetch recent cars", error);
+      }
+    },
+
+     async fetchCarStats() {
+      try {
+      const res = await axios.get(
+        "http://localhost:3000/api/cars/stats"
+      );
+      this.stats = res.data.stats;
+    } catch (error) {
+      console.error("FAILED TO FETCH STATS", error);
+    }},
+
+    formatDate(date) {
+      return new Date(date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+    },
+  },
+};
+</script>
 <template>
 	<div class="admin-wrapper">
 		<adminNavbar />
@@ -12,21 +73,21 @@
 				<div class="col-sm-6 col-lg-3 mb-3">
 					<div class="stat-box bg1">
 						<h4>Total Cars</h4>
-						<h2>25</h2>
+						<h2>{{ stats.totalCars }}</h2>
 					</div>
 				</div>
 
 				<div class="col-sm-6 col-lg-3 mb-3">
 					<div class="stat-box bg2">
 						<h4>Available Cars</h4>
-						<h2>14</h2>
+						<h2>{{ stats.availableCars }}</h2>
 					</div>
 				</div>
 
 				<div class="col-sm-6 col-lg-3 mb-3">
 					<div class="stat-box bg3">
 						<h4>Booked Cars</h4>
-						<h2>11</h2>
+						<h2>{{ stats.bookedCars }}</h2>
 					</div>
 				</div>
 
@@ -38,50 +99,84 @@
 				</div>
 			</div>
 
-			<!-- CAR TABLE -->
+			<!-- REVENUE SECTION (REPLACED CAR STATUS) -->
 			<div class="card-box mt-4">
-				<h4><strong>Car Status</strong></h4>
+				<h4><strong>Revenue Overview</strong></h4>
+
+				<div class="row mt-3">
+					<div class="col-md-4 mb-3">
+						<div class="stat-box bg1">
+							<h5>Today Revenue</h5>
+							<h3>₹12,500</h3>
+						</div>
+					</div>
+
+					<div class="col-md-4 mb-3">
+						<div class="stat-box bg2">
+							<h5>This Month</h5>
+							<h3>₹2,45,000</h3>
+						</div>
+					</div>
+
+					<div class="col-md-4 mb-3">
+						<div class="stat-box bg3">
+							<h5>Total Revenue</h5>
+							<h3>₹18,90,000</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- RECENTLY ADDED CARS -->
+			<div class="card-box mt-4">
+				<h4><strong>Recently Added Cars</strong></h4>
+
 				<div class="table-responsive mt-3">
 					<table class="table table-bordered">
 						<thead class="thead-dark">
 							<tr>
-								<th>Car</th>
+								<th>Car Name</th>
 								<th>Model</th>
+								<th>Price / Day</th>
 								<th>Status</th>
-								<th>Price/Day</th>
-								<th>Actions</th>
+								<th>Added Date</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>Innova Crysta</td>
-								<td>2022</td>
-								<td><span class="badge badge-success">Available</span></td>
-								<td>₹3500</td>
-								<td>
-									<button class="btn btn-warning btn-sm">Edit</button>
-									<button class="btn btn-danger btn-sm">Delete</button>
-								</td>
-							</tr>
+  <tr v-for="car in recentCars" :key="car._id">
+    <td>{{ car.name }}</td>
+    <td>{{ car.year }}</td>
+    <td>₹{{ car.price }}</td>
+    <td>
+      <span
+        class="badge"
+        :class="
+          car.status === 'Available'
+            ? 'badge-success'
+            : car.status === 'Booked'
+            ? 'badge-danger'
+            : 'badge-warning'
+        "
+      >
+        {{ car.status }}
+      </span>
+    </td>
+    <td>{{ formatDate(car.createdAt) }}</td>
+  </tr>
 
-							<tr>
-								<td>Fortuner</td>
-								<td>2021</td>
-								<td><span class="badge badge-danger">Booked</span></td>
-								<td>₹5500</td>
-								<td>
-									<button class="btn btn-warning btn-sm">Edit</button>
-									<button class="btn btn-danger btn-sm">Delete</button>
-								</td>
-							</tr>
-						</tbody>
+  <tr v-if="recentCars.length === 0">
+    <td colspan="5" class="text-center">No cars added yet</td>
+  </tr>
+                        </tbody>
+
 					</table>
 				</div>
 			</div>
 
-			<!-- USER TABLE -->
+			<!-- USER TABLE (UNCHANGED) -->
 			<div class="card-box mt-4">
 				<h4><strong>Recent Users</strong></h4>
+
 				<div class="table-responsive mt-3">
 					<table class="table table-bordered">
 						<thead class="thead-dark">
@@ -110,9 +205,11 @@
 					</table>
 				</div>
 			</div>
+
 		</div>
 	</div>
 </template>
+
 
 <style scoped>
 body {

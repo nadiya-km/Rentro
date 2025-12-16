@@ -9,29 +9,34 @@
 		<div :class="['sidebar', { 'sidebar-open': isOpen }]">
 			<h4 class="text-center mb-4">Admin Panel</h4>
 
-			<a href="/admin/dashboard">
+			<router-link to="/admin/dashboard">
 				<i class="fa fa-home mr-2"></i>
 				Dashboard
-			</a>
-			<a href="/admin/manageCars">
+			</router-link>
+
+			<router-link to="/admin/manageCars">
 				<i class="fa fa-car mr-2"></i>
 				Manage Cars
-			</a>
-			<a href="/admin/addNewCar">
+			</router-link>
+
+			<router-link to="/admin/addNewCar">
 				<i class="fa fa-plus mr-2"></i>
 				Add New Car
-			</a>
-			<a href="/admin/users">
+			</router-link>
+
+			<router-link to="/admin/users">
 				<i class="fa fa-users mr-2"></i>
 				Users
-			</a>
-			<a href="/admin/booking">
+			</router-link>
+
+			<router-link to="/admin/booking">
 				<i class="fa fa-book mr-2"></i>
 				Bookings
-			</a>
+			</router-link>
 		</div>
 	</div>
 </template>
+
 
 <script>
 export default {
