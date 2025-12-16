@@ -1,3 +1,86 @@
+<script>
+import axios from "axios";
+
+
+export default {
+
+
+  data() {
+    return {
+      car: {
+        name: "",
+        year: "",
+        category: "SUV",
+        seats: "",
+        fuel: "Petrol",
+        transmission: "Automatic",
+        price: "",
+        status: "Available",
+        description: "",
+        features: [],
+      },
+      image: null,
+    };
+  },
+
+  async mounted() {
+    try {
+      const res = await axios.get(
+        `http://localhost:3000/api/cars/${this.$route.params.id}`
+      );
+      this.car = res.data.car;
+    } catch (err) {
+      console.error("FETCH CAR ERROR:", err);
+    }
+  },
+
+  methods: {
+    fileSelected(e) {
+      this.image = e.target.files[0];
+    },
+
+    async updateCar() {
+  try {
+    const formData = new FormData();
+
+    // Append ONLY non-empty fields
+    Object.entries(this.car).forEach(([key, value]) => {
+      if (
+        value !== "" &&
+        value !== null &&
+        value !== undefined &&
+        key !== "image"
+      ) {
+        if (Array.isArray(value)) {
+          value.forEach(v => formData.append(`${key}[]`, v));
+        } else {
+          formData.append(key, value);
+        }
+      }
+    });
+
+    if (this.image) {
+      formData.append("image", this.image);
+    }
+
+    await axios.put(
+      `http://localhost:3000/api/cars/${this.car._id}`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+
+    alert("Car updated successfully");
+    this.$router.push("/admin/manageCars");
+  } catch (error) {
+    console.error("UPDATE CAR ERROR:", error);
+    alert("Update failed");
+  }
+}
+
+  },
+};
+</script>
+
 <template>
   <div class="add-car-container">
     <Sidebar/>
@@ -8,8 +91,9 @@
 
     <div class="card shadow mt-4">
       <div class="card-body">
+        
+<form @submit.prevent="updateCar" enctype="multipart/form-data">
 
-        <form @submit.prevent="submitCar" enctype="multipart/form-data">
 
           <!-- Row 1 -->
           <div class="form-row">
@@ -122,9 +206,10 @@
           </div>
 
           <!-- Submit -->
-          <button type="submit" class="btn btn-dark btn-block mt-3">
-            Add Car
-          </button>
+        <button type="submit" class="btn btn-dark btn-block mt-3">
+            Update Car
+         </button>
+
 
         </form>
 
@@ -133,94 +218,11 @@
 
   </div>
 </template>
-
-<script>
-import Sidebar from '@/components/sidebar.vue';
-import axios from "axios";
-
-export default {
-  name: "AddNewCar",
-
-  data() {
-    return {
-      car: {
-        name: "",
-        year: "",
-        category: "SUV",
-        seats: "",
-        fuel: "Petrol",
-        transmission: "Automatic",
-        price: "",
-        status: "Available",
-        description: "",
-        features: [],
-        image: null,
-      }
-    };
-  },
-
- 
-
-methods: {
-  fileSelected(e) {
-    this.car.image = e.target.files[0];
-  },
-
-  async submitCar() {
-    try {
-      const formData = new FormData();
-
-      // append text fields
-      formData.append("name", this.car.name);
-      formData.append("year", this.car.year);
-      formData.append("category", this.car.category);
-      formData.append("seats", this.car.seats);
-      formData.append("fuel", this.car.fuel);
-      formData.append("transmission", this.car.transmission);
-      formData.append("price", this.car.price);
-      formData.append("status", this.car.status);
-      formData.append("description", this.car.description);
-
-      // ✅ features is ARRAY → backend expects array/string
-      this.car.features.forEach((feature) => {
-        formData.append("features", feature);
-      });
-
-      // append image
-      formData.append("image", this.car.image);
-
-      // API call
-      const res = await axios.post(
-        "http://localhost:3000/api/cars/add",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          withCredentials: true,
-        }
-      );
-
-      alert("Car added successfully 🚗");
-      console.log(res.data);
-      this.$router.push("/admin/dashboard");
-
-    } catch (error) {
-      console.error(error.response?.data || error.message);
-      alert("Failed to add car ");
-    }
-  },
-}
-
-};
-</script>
-
 <style scoped>
 .add-car-container {
-  margin-left: 240px;
   padding: 30px;
-  transition: 0.3s ease;
 }
+
 
 @media (max-width: 992px) {
   .add-car-container {

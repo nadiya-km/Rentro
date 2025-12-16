@@ -4,7 +4,7 @@
     <!-- LEFT SIDE LOGO -->
     <a class="navbar-brand d-flex align-items-center" href="#">
       <img
-        src="@/assets/images/logo.png"
+        src="@/assets/images/logo2.png"
         alt="Logo"
         height="40"
         class="mr-2"
@@ -49,5 +49,8 @@ export default {
 <style scoped>
 .navbar-brand img {
   object-fit: cover;
+}
+.navbar{
+  background-color: transparent !important ;
 }
 </style>

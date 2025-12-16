@@ -72,6 +72,11 @@ const routes = [
 			showAdminSidebar: true,
 		},
 	},
+	{
+		path: "/admin/edit-car/:id",
+		component: () => import("@/admin/editCar.vue"),
+	}
+
 ];
 
 const router = createRouter({
