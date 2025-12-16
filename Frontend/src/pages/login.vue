@@ -62,16 +62,12 @@ export default {
 	methods: {
 		async login() {
 			try {
-				const res = await api.post('/auth/login', {
+				await api.post('/user/login', {
 					email: this.email,
 					password: this.password,
 				});
 
-				// Save token
-				localStorage.setItem('token', res.data.token);
-
-				// Redirect user to home/dashboard
-				this.$router.push('/');
+				this.$router.push('/profile');
 			} catch (err) {
 				alert(err.response?.data?.message || 'Invalid credentials!');
 			}

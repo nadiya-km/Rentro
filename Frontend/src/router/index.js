@@ -9,12 +9,20 @@ import Dashbord from '@/admin/dashbord.vue';
 import Manage from '@/admin/manage.vue';
 import AdminLogin from '@/admin/adminLogin.vue';
 import addNewCar from '@/admin/addNewCar.vue';
+import userProfile from '@/pages/userProfile.vue';
 
 const routes = [
 	{ path: '/', component: Home },
 	{ path: '/login', component: Login },
 	{ path: '/signup', component: Signup },
 	{ path: '/cars', component: Cars },
+	{
+		path: '/profile',
+		component: userProfile,
+
+		meta: { requiresUser: true, hideMainNavbar: true, showuserNavbar: true },
+	},
+	//
 
 	// admin
 	{
@@ -89,6 +97,22 @@ router.beforeEach(async (to, from, next) => {
 			next(); // admin verified
 		} catch (err) {
 			next('/admin/login'); // not admin
+		}
+	} else {
+		next();
+	}
+});
+
+/* user route protection */
+router.beforeEach(async (to, from, next) => {
+	if (to.meta.requiresUser) {
+		try {
+			await axios.get('http://localhost:3000/api/user/check-auth', {
+				withCredentials: true,
+			});
+			next(); // admin verified
+		} catch (err) {
+			next('/login'); // not admin
 		}
 	} else {
 		next();

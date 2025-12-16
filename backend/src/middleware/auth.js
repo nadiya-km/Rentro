@@ -1,16 +1,15 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = (req, res, next) => {
+exports.isAuthenticated = (req, res, next) => {
+	const token = req.cookies.userToken; // cookie instead of localStorage
+
+	if (!token) return res.status(401).json({ message: 'Login required' });
+
 	try {
-		const token = req.headers.token;
-
-		if (!token) return res.status(401).json({ message: 'No token provided!' });
-
 		const decoded = jwt.verify(token, process.env.JWT_SECRET);
-		req.user = decoded;
-
+		req.user = decoded; // attach user info to request
 		next();
 	} catch (err) {
-		res.status(401).json({ message: 'Invalid token!' });
+		res.status(401).json({ message: 'Invalid token' });
 	}
 };

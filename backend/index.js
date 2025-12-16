@@ -5,11 +5,11 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const fileUpload = require('express-fileupload');
 
-const authRoutes = require('./src/routes/authRoutes.js');
+const userRoutes = require('./src/routes/userRoutes.js');
 const adminRoutes = require('./src/routes/admin');
-const carRoutes = require("./src/routes/carRoutes");
+const carRoutes = require('./src/routes/carRoutes');
 
-const path = require("path");
+const path = require('path');
 
 dotenv.config();
 const app = express();
@@ -19,7 +19,6 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cookieParser());
 
-
 // cors
 app.use(
 	cors({
@@ -28,25 +27,23 @@ app.use(
 	})
 );
 
-
 app.use(
-  fileUpload({
-    useTempFiles: true,
-    tempFileDir: path.join(__dirname, "tmp"),
-    createParentPath: true,
-  })
+	fileUpload({
+		useTempFiles: true,
+		tempFileDir: path.join(__dirname, 'tmp'),
+		createParentPath: true,
+	})
 );
 
 // connect DB
 connectDB();
 
 // routes
-app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes);
 
 app.use('/api/admin', adminRoutes);
 
-
-app.use("/api/cars", carRoutes);
+app.use('/api/cars', carRoutes);
 
 // server
 app.listen(port, () => {
