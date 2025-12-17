@@ -31,15 +31,16 @@ const userSchema = new mongoose.Schema(
 			enum: ['admin', 'user'],
 			default: 'user',
 		}, // (optionl) location,
+		resetPasswordToken: String,
+		resetPasswordExpire: Date,
 	},
 	{ timestamps: true }
 );
 
-//  hash password before save
+// hash password before save
 userSchema.pre('save', async function () {
-	if (!this.isModified('password')) return;
-	const salt = await bcrypt.genSalt(10);
-	this.password = await bcrypt.hash(this.password, salt);
+	if (!this.isModified('password')) return; // do nothing if password not changed
+	this.password = await bcrypt.hash(this.password, 10);
 });
 
 //  compare password for login

@@ -25,37 +25,21 @@
 
 				<!-- ADMIN LINKS (ONLY ON SMALL SCREENS) -->
 				<li class="nav-item d-lg-none">
-					<router-link class="nav-link" to="/admin/dashboard">
+					<router-link class="nav-link" to="/">
 						<i class="fa fa-home mr-2"></i>
-						Dashboard
+						Home
 					</router-link>
 				</li>
-
 				<li class="nav-item d-lg-none">
-					<router-link class="nav-link" to="/admin/manageCars">
-						<i class="fa fa-car mr-2"></i>
-						Manage Cars
-					</router-link>
-				</li>
-
-				<li class="nav-item d-lg-none">
-					<router-link class="nav-link" to="/admin/addNewCar">
-						<i class="fa fa-plus mr-2"></i>
-						Add New Car
-					</router-link>
-				</li>
-
-				<li class="nav-item d-lg-none">
-					<router-link class="nav-link" to="/admin/users">
-						<i class="fa fa-users mr-2"></i>
-						Users
-					</router-link>
-				</li>
-
-				<li class="nav-item d-lg-none">
-					<router-link class="nav-link" to="/admin/booking">
+					<router-link class="nav-link" to="/cars">
 						<i class="fa fa-book mr-2"></i>
-						Bookings
+						Cars
+					</router-link>
+				</li>
+				<li class="nav-item d-lg-none">
+					<router-link class="nav-link" to="/user/profile">
+						<i class="fa fa-car mr-2"></i>
+						Profile
 					</router-link>
 				</li>
 

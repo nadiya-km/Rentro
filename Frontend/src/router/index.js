@@ -9,14 +9,19 @@ import Manage from '@/admin/manage.vue';
 import AdminLogin from '@/admin/adminLogin.vue';
 import addNewCar from '@/admin/addNewCar.vue';
 import userProfile from '@/pages/userProfile.vue';
-
+import forgotPassword from '../pages/forgotPassword.vue';
+import resetPassword from '../pages/resetPassword.vue';
 const routes = [
 	{ path: '/', component: Home },
-	{ path: '/login', component: Login },
-	{ path: '/signup', component: Signup },
-	{ path: '/cars', component: Cars },
 	{
-		path: '/profile',
+		path: '/login',
+		component: Login,
+		meta: { hideMainNavbar: true },
+	},
+	{ path: '/signup', component: Signup, meta: { hideMainNavbar: true } },
+	{ path: '/cars', component: Cars, meta: { hideMainNavbar: true, showuserNavbar: true } },
+	{
+		path: '/user/profile',
 		component: userProfile,
 
 		meta: { requiresUser: true, hideMainNavbar: true, showuserNavbar: true },
@@ -80,10 +85,25 @@ const routes = [
 		},
 	},
 	{
-		path: "/admin/edit-car/:id",
-		component: () => import("@/admin/editCar.vue"),
-	}
-
+		path: '/admin/edit-car/:id',
+		component: () => import('@/admin/editCar.vue'),
+	},
+	{
+		path: '/user/forgot-password',
+		name: 'ForgotPassword',
+		component: forgotPassword,
+		meta: {
+			hideMainNavbar: true,
+		},
+	},
+	{
+		path: '/user/reset-password',
+		name: 'ResetPassword',
+		component: resetPassword,
+		meta: {
+			hideMainNavbar: true,
+		},
+	},
 ];
 
 const router = createRouter({

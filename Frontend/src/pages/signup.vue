@@ -68,7 +68,7 @@
 
 				<div class="mt-3 text-center text-light small">
 					Already have an account?
-					<a href="/login" class="login-link">Login</a>
+					<router-link to="/login" class="login-link">Login</router-link>
 				</div>
 			</form>
 		</div>
