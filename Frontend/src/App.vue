@@ -13,6 +13,8 @@
 		<Sidebar v-if="$route.meta.showAdminSidebar" />
 
 		<router-view />
+
+		
 	</div>
 </template>
 
@@ -33,7 +35,7 @@ export default {
 </script>
 <style>
   
-  body {
+  /* body {
    background: linear-gradient(
   180deg,
   #C8C6D0 5%,
@@ -43,5 +45,5 @@ export default {
   #0D1D25 100%
 );
 
-  }
+  } */
 </style>

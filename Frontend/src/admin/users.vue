@@ -40,8 +40,11 @@
                 <td>{{ user.phone || "—" }}</td>
 
                 <td>
-                  <span class="badge badge-info">0</span>
+                  <span class="badge badge-info">
+                    {{ user.bookingsCount }}
+                  </span>
                 </td>
+
 
                 <td>
                   <span
@@ -59,16 +62,6 @@
                 <td>{{ formatDate(user.createdAt) }}</td>
 
                 <td>
-                  <button class="btn btn-sm btn-primary" @click="viewUser(user)">
-                    View
-                  </button>
-
-                  <button
-                    class="btn btn-sm btn-warning ml-1"
-                    @click="toggleStatus(user)"
-                  >
-                    {{ user.status === 'Active' ? 'Block' : 'Unblock' }}
-                  </button>
 
                   <button
                     class="btn btn-sm btn-danger ml-1"

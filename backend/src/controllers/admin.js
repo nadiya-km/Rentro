@@ -42,17 +42,28 @@ exports.adminLogout = (req, res) => {
 /*GET ALL USERS */
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({ role: "user" })
-      .select("-password")
-      .sort({ createdAt: -1 });
+    const users = await User.find().sort({ createdAt: -1 });
 
-    res.json({
+    // attach booking count per user
+    const usersWithBookings = await Promise.all(
+      users.map(async (user) => {
+        const bookingsCount = await Booking.countDocuments({
+          user: user._id,
+        });
+
+        return {
+          ...user.toObject(),
+          bookingsCount,
+        };
+      })
+    );
+
+    res.status(200).json({
       success: true,
-      users,
+      users: usersWithBookings,
     });
   } catch (error) {
-    console.error("GET USERS ERROR:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -72,13 +83,11 @@ exports.getRecentUsers = async (req, res) => {
     });
   } catch (error) {
     console.error("GET RECENT USERS ERROR:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error" })
   }
 };
 
-/* =========================
-   USER STATS
-========================= */
+/*USER STATS */
 exports.getUserStats = async (req, res) => {
   try {
     const totalUsers = await User.countDocuments({ role: "user" });

@@ -54,53 +54,40 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "AdminAllBookings",
 
   data() {
     return {
-      bookings: [
-        {
-          id: 1,
-          user: "Rahul Sharma",
-          car: "Toyota Fortuner",
-          pickup: "Bengaluru Airport",
-          drop: "Whitefield",
-          pickupDate: "12 Oct 2024",
-          returnDate: "15 Oct 2024",
-          payment: "Online Paid",
-          paymentColor: "green",
-          status: "Completed",
-          statusColor: "green",
-        },
-        {
-          id: 2,
-          user: "Arun Kumar",
-          car: "Honda City",
-          pickup: "MG Road",
-          drop: "Koramangala",
-          pickupDate: "03 Nov 2024",
-          returnDate: "05 Nov 2024",
-          payment: "Cash on Pickup",
-          paymentColor: "yellow",
-          status: "Upcoming",
-          statusColor: "blue",
-        },
-        {
-          id: 3,
-          user: "Meera S",
-          car: "Maruti Swift",
-          pickup: "Yelahanka",
-          drop: "Hebbal",
-          pickupDate: "01 Sep 2024",
-          returnDate: "03 Sep 2024",
-          payment: "Refunded",
-          paymentColor: "red",
-          status: "Cancelled",
-          statusColor: "red",
-        },
-      ],
+      bookings: [],
     };
+  },
+
+  async mounted() {
+    try {
+      const res = await axios.get(
+        "http://localhost:3000/api/bookings/admin",
+        { withCredentials: true }
+      );
+
+      this.bookings = res.data.bookings.map((b) => ({
+        id: b._id,
+        user: b.user?.name || "N/A",
+        car: b.car?.name || "N/A",
+        pickup: b.pickupLocation,
+        drop: b.dropLocation,
+        pickupDate: new Date(b.pickupDateTime).toLocaleDateString(),
+        returnDate: new Date(b.dropDateTime).toLocaleDateString(),
+        payment: `₹${b.totalAmount}`,
+        paymentColor: "green",
+        status: "Confirmed",
+        statusColor: "green",
+      }));
+    } catch (err) {
+      console.error("Failed to load bookings", err);
+    }
   },
 
   methods: {

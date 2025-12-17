@@ -1,36 +1,72 @@
+const Booking = require("../models/Booking");
+const Car = require("../models/Car");
+
 exports.createBooking = async (req, res) => {
-  const {
-    carId,
-    pickupDate,
-    dropDate,
-    bankAccount,
-    ifsc,
-  } = req.body;
+  try {
+    const {
+      carId,
+      pickupLocation,
+      dropLocation,
+      pickupDateTime,
+      dropDateTime,
+    } = req.body;
 
-  const car = await Car.findById(carId);
+    // 👤 Logged-in user from JWT
+    const userId = req.user.id; //  FIXED
 
-  const days =
-    Math.ceil((new Date(dropDate) - new Date(pickupDate)) / 86400000) || 1;
+    const car = await Car.findById(carId);
+    if (!car) return res.status(404).json({ message: "Car not found" });
 
-  const totalAmount = days * car.price;
+    // 🧮 Calculate days
+    const start = new Date(pickupDateTime);
+    const end = new Date(dropDateTime);
 
-  const booking = await Booking.create({
-    car: carId,
-    user: req.user._id,
-    pickupDate,
-    dropDate,
-    totalDays: days,
-    totalAmount,
-    payment: {
-      method: "Bank Transfer",
-      bankAccount,
-      ifsc,
-    },
-  });
+    if (isNaN(start) || isNaN(end) || end <= start) {
+      return res.status(400).json({ message: "Invalid dates" });
+    }
 
-  // mark car booked
-  car.status = "Booked";
-  await car.save();
+    const totalDays = Math.ceil(
+      (end - start) / (1000 * 60 * 60 * 24)
+    );
 
-  res.status(201).json({ success: true, booking });
+    // 💰 Calculate revenue
+    const totalAmount = totalDays * Number(car.price);
+
+    const booking = await Booking.create({
+      user: userId,
+      car: carId,
+      pickupLocation,
+      dropLocation,
+      pickupDateTime,
+      dropDateTime,
+      totalDays,
+      pricePerDay: car.price,
+      totalAmount,
+    });
+
+    res.status(201).json({
+      success: true,
+      booking,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+
+exports.getAllBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find()
+      .populate("user", "name email") // user details
+      .populate("car", "name price")  // car details
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      bookings,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
