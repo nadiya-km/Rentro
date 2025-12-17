@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		 phone: {
+		phone: {
 			type: String,
 			required: false, // optional
 		},
@@ -35,12 +35,13 @@ const userSchema = new mongoose.Schema(
 			enum: ['admin', 'user'],
 			default: 'user',
 		}, // (optionl) location,
+		resetPasswordToken: String,
+		resetPasswordExpire: Date,
 		status: {
 			type: String,
-			enum: ["Active", "Blocked"],
-			default: "Active",
-			},
-
+			enum: ['Active', 'Blocked'],
+			default: 'Active',
+		},
 	},
 	{ timestamps: true }
 );
@@ -57,4 +58,4 @@ userSchema.methods.comparePassword = async function (enteredPassword) {
 	return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.models.User || mongoose.model("User", userSchema);
+module.exports = mongoose.models.User || mongoose.model('User', userSchema);

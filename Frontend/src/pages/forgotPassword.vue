@@ -7,10 +7,13 @@
 			</div>
 
 			<!-- Title -->
-			<h3 class="text-center mb-4 text-light">Welcome Back</h3>
+			<h3 class="text-center mb-2 text-light">Forgot Password</h3>
+			<p class="text-center text-muted small mb-4">
+				Enter your registered email to receive a reset link
+			</p>
 
 			<!-- Form -->
-			<form @submit.prevent="login">
+			<form @submit.prevent="sendResetLink">
 				<div class="form-group">
 					<label class="text-light">Email</label>
 					<input
@@ -22,24 +25,20 @@
 					/>
 				</div>
 
-				<div class="form-group mt-3">
-					<label class="text-light">Password</label>
-					<input
-						type="password"
-						class="form-control"
-						placeholder="Enter your password"
-						v-model="password"
-						required
-					/>
+				<button type="submit" class="btn btn-primary btn-block mt-4 login-btn" :disabled="loading">
+					{{ loading ? 'Sending...' : 'Send Reset Link' }}
+				</button>
+
+				<div v-if="success" class="mt-3 text-center text-success small">
+					{{ success }}
 				</div>
 
-				<button type="submit" class="btn btn-primary btn-block mt-4 login-btn">Login</button>
+				<div v-if="error" class="mt-3 text-center text-danger small">
+					{{ error }}
+				</div>
 
-				<router-link to="/user/forgot-password" class="small forgot">Forgot Password?</router-link>
-
-				<div class="mt-2 text-center text-light small">
-					Don't have an account?
-					<router-link to="/signup" class="signup-link">Sign Up</router-link>
+				<div class="mt-3 text-center">
+					<a @click.prevent="$router.push('/login')" class="small forgot">Back to Login</a>
 				</div>
 			</form>
 		</div>
@@ -50,24 +49,30 @@
 import api from '@/services/api';
 
 export default {
-	name: 'Login',
+	name: 'ForgotPassword',
 	data() {
 		return {
 			email: '',
-			password: '',
+			loading: false,
+			success: '',
+			error: '',
 		};
 	},
 	methods: {
-		async login() {
-			try {
-				await api.post('/user/login', {
-					email: this.email,
-					password: this.password,
-				});
+		async sendResetLink() {
+			this.loading = true;
+			this.success = '';
+			this.error = '';
 
-				this.$router.push('/cars');
+			try {
+				const res = await api.post('/user/forgot-password', {
+					email: this.email,
+				});
+				this.success = res.data.message;
 			} catch (err) {
-				alert(err.response?.data?.message || 'Invalid credentials!');
+				this.error = err.response?.data?.message || 'Something went wrong';
+			} finally {
+				this.loading = false;
 			}
 		},
 	},
@@ -75,14 +80,14 @@ export default {
 </script>
 
 <style scoped>
-/* Background */
+/* SAME STYLES AS LOGIN */
+
 .login-wrapper {
 	min-height: 100vh;
 	background: linear-gradient(135deg, #0a0f24, #1f2937, #0d1b2a);
 	padding: 20px;
 }
 
-/* Card */
 .login-card {
 	width: 100%;
 	max-width: 420px;
@@ -98,7 +103,6 @@ export default {
 	box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
-/* Inputs */
 .form-control {
 	background: rgba(255, 255, 255, 0.1);
 	border: none;
@@ -111,7 +115,6 @@ export default {
 	box-shadow: 0 0 5px #39ff14;
 }
 
-/* Login Button */
 .login-btn {
 	background: #39ff14;
 	border: none;
@@ -124,13 +127,13 @@ export default {
 	background: #2dd10f;
 }
 
-/* Links */
 .forgot {
 	color: #bbb;
+	cursor: pointer;
 }
 
-.signup-link {
+.forgot:hover {
 	color: #39ff14;
-	font-weight: 600;
+	text-decoration: underline;
 }
 </style>

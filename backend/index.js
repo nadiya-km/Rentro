@@ -8,10 +8,9 @@ const fileUpload = require('express-fileupload');
 const userRoutes = require('./src/routes/userRoutes.js');
 const adminRoutes = require('./src/routes/admin');
 const carRoutes = require('./src/routes/carRoutes');
-const adminRecentUser =require("./src/routes/admin")
+const adminRecentUser = require('./src/routes/admin');
 // const bookingRoutes =require("./src")
 const bookingRoutes = require('./src/routes/booking'); // 👈 ADD THIS
-
 
 const path = require('path');
 
@@ -42,8 +41,7 @@ app.use(
 // connect DB
 connectDB();
 
-
-app.use("/api/bookings", bookingRoutes);
+app.use('/api/bookings', bookingRoutes);
 // routes
 app.use('/api/user', userRoutes);
 
@@ -51,8 +49,8 @@ app.use('/api/admin', adminRoutes);
 
 app.use('/api/cars', carRoutes);
 
-app.use("/api/admin",adminRecentUser );
- // 👈 ADD THIS
+app.use('/api/admin', adminRecentUser);
+// 👈 ADD THIS
 
 // server
 app.listen(port, () => {
