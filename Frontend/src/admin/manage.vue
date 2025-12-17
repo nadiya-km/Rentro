@@ -63,12 +63,10 @@
     <td class="text-muted">—</td>
 
     <td>
-      <img
-        :src="car.image.url"
-        width="60"
-        class="rounded"
-        alt="car"
-      />
+      <img v-if="car.images && car.images.length" :src="car.images[0].url" width="60" class="rounded" alt="car"/>
+
+<span v-else class="text-muted">No Image</span>
+
     </td>
 
     <td>

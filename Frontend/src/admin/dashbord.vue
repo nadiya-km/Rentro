@@ -11,21 +11,24 @@ export default {
   },
 
   data() {
-  return {
-    recentCars: [],
-    stats: {
-      totalCars: 0,
-      availableCars: 0,
-      bookedCars: 0,
-    },
-  };
-},
+    return {
+      recentCars: [],
+      recentUsers: [], // ✅ ADDED
 
+      stats: {
+        totalCars: 0,
+        availableCars: 0,
+        bookedCars: 0,
+        totalUsers: 0, // ✅ ADDED
+      },
+    };
+  },
 
- mounted() {
-  this.fetchRecentCars();
-  this.fetchCarStats();
-},
+  mounted() {
+    this.fetchRecentCars();
+    this.fetchCarStats();
+    this.fetchRecentUsers(); // ✅ ADDED
+  },
 
   methods: {
     async fetchRecentCars() {
@@ -39,15 +42,32 @@ export default {
       }
     },
 
-     async fetchCarStats() {
+    async fetchCarStats() {
       try {
-      const res = await axios.get(
-        "http://localhost:3000/api/cars/stats"
-      );
-      this.stats = res.data.stats;
-    } catch (error) {
-      console.error("FAILED TO FETCH STATS", error);
-    }},
+        const res = await axios.get(
+          "http://localhost:3000/api/cars/stats"
+        );
+        this.stats.totalCars = res.data.stats.totalCars;
+        this.stats.availableCars = res.data.stats.availableCars;
+        this.stats.bookedCars = res.data.stats.bookedCars;
+      } catch (error) {
+        console.error("FAILED TO FETCH STATS", error);
+      }
+    },
+
+    // ✅ ADDED
+    async fetchRecentUsers() {
+      try {
+        const res = await axios.get(
+          "http://localhost:3000/api/admin/users/recent",
+          { withCredentials: true }
+        );
+        this.recentUsers = res.data.users;
+        this.stats.totalUsers = res.data.totalUsers;
+      } catch (error) {
+        console.error("FAILED TO FETCH USERS", error);
+      }
+    },
 
     formatDate(date) {
       return new Date(date).toLocaleDateString("en-IN", {
@@ -59,6 +79,7 @@ export default {
   },
 };
 </script>
+
 <template>
 	<div class="admin-wrapper">
 		<adminNavbar />
@@ -94,7 +115,7 @@ export default {
 				<div class="col-sm-6 col-lg-3 mb-3">
 					<div class="stat-box bg4">
 						<h4>Total Users</h4>
-						<h2>132</h2>
+						<h2>{{ stats.totalUsers }}</h2>
 					</div>
 				</div>
 			</div>
@@ -143,35 +164,35 @@ export default {
 							</tr>
 						</thead>
 						<tbody>
-  <tr v-for="car in recentCars" :key="car._id">
-    <td>{{ car.name }}</td>
-    <td>{{ car.year }}</td>
-    <td>₹{{ car.price }}</td>
-    <td>
-      <span
-        class="badge"
-        :class="
-          car.status === 'Available'
-            ? 'badge-success'
-            : car.status === 'Booked'
-            ? 'badge-danger'
-            : 'badge-warning'
-        "
-      >
-        {{ car.status }}
-      </span>
-    </td>
-    <td>{{ formatDate(car.createdAt) }}</td>
-  </tr>
+	<tr v-for="car in recentCars" :key="car._id">
+		<td>{{ car.name }}</td>
+		<td>{{ car.year }}</td>
+		<td>₹{{ car.price }}</td>
+		<td>
+		<span
+			class="badge"
+			:class="
+			car.status === 'Available'
+				? 'badge-success'
+				: car.status === 'Booked'
+				? 'badge-danger'
+				: 'badge-warning'
+			"
+		>
+			{{ car.status }}
+		</span>
+		</td>
+		<td>{{ formatDate(car.createdAt) }}</td>
+	</tr>
 
-  <tr v-if="recentCars.length === 0">
-    <td colspan="5" class="text-center">No cars added yet</td>
-  </tr>
-                        </tbody>
+	<tr v-if="recentCars.length === 0">
+		<td colspan="5" class="text-center">No cars added yet</td>
+	</tr>
+							</tbody>
 
-					</table>
+						</table>
+					</div>
 				</div>
-			</div>
 
 			<!-- USER TABLE (UNCHANGED) -->
 			<div class="card-box mt-4">
@@ -188,20 +209,18 @@ export default {
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>Arun Kumar</td>
-								<td>arun@gmail.com</td>
-								<td>9876543210</td>
-								<td>3</td>
-							</tr>
+  <tr v-for="user in recentUsers" :key="user._id">
+    <td>{{ user.name }}</td>
+    <td>{{ user.email }}</td>
+    <td>{{ formatDate(user.createdAt) }}</td>
+    <td>0</td>
+  </tr>
 
-							<tr>
-								<td>Sameer</td>
-								<td>sam@gmail.com</td>
-								<td>9845123456</td>
-								<td>1</td>
-							</tr>
-						</tbody>
+  <tr v-if="recentUsers.length === 0">
+    <td colspan="4" class="text-center">No users found</td>
+  </tr>
+                       </tbody>
+
 					</table>
 				</div>
 			</div>

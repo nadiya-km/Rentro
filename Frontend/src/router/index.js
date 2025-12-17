@@ -9,13 +9,16 @@ import Manage from '@/admin/manage.vue';
 import AdminLogin from '@/admin/adminLogin.vue';
 import addNewCar from '@/admin/addNewCar.vue';
 import userProfile from '@/pages/userProfile.vue';
+import CarDetails from '@/pages/CarDetails.vue';
+
+
 
 const routes = [
 	{ path: '/', component: Home },
 	{ path: '/login', component: Login },
 	{ path: '/signup', component: Signup },
 	{ path: '/cars', component: Cars },
-	{
+		{
 		path: '/profile',
 		component: userProfile,
 
@@ -82,9 +85,16 @@ const routes = [
 	{
 		path: "/admin/edit-car/:id",
 		component: () => import("@/admin/editCar.vue"),
-	}
+	},
+	{
+		path: "/cars/:id",
+		name: "CarDetails",
+		component: CarDetails,
+	},
 
-];
+	];
+
+
 
 const router = createRouter({
 	history: createWebHistory(),

@@ -118,7 +118,7 @@
           <!-- Image Upload -->
           <div class="form-group">
             <label>Car Image</label>
-            <input type="file" class="form-control" @change="fileSelected">
+            <input type="file" class="form-control" multiple accept="image/*" @change="fileSelected">
           </div>
 
           <!-- Submit -->
@@ -154,7 +154,7 @@ export default {
         status: "Available",
         description: "",
         features: [],
-        image: null,
+        images: [],
       }
     };
   },
@@ -163,8 +163,8 @@ export default {
 
 methods: {
   fileSelected(e) {
-    this.car.image = e.target.files[0];
-  },
+  this.car.images = Array.from(e.target.files);
+},
 
   async submitCar() {
     try {
@@ -187,7 +187,10 @@ methods: {
       });
 
       // append image
-      formData.append("image", this.car.image);
+          this.car.images.forEach((file) => {
+          formData.append("images", file);
+        });
+
 
       // API call
       const res = await axios.post(
