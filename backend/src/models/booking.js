@@ -22,7 +22,7 @@ const bookingSchema = new mongoose.Schema(
 
     totalDays: Number,
     pricePerDay: Number,
-    totalAmount: Number, // 👈 REVENUE VALUE
+    totalAmount: Number, 
 
     status: {
       type: String,

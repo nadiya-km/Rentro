@@ -16,7 +16,7 @@
             <th>Return Date</th>
             <th>Payment</th>
             <th>Status</th>
-            <th>Action</th>
+            
           </tr>
         </thead>
 
@@ -40,9 +40,7 @@
               </span>
             </td>
             <td>
-              <button class="view-btn" @click="goToDetails(item.id)">
-                View
-              </button>
+              
             </td>
           </tr>
         </tbody>

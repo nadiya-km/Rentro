@@ -1,85 +1,3 @@
-<script>
-import axios from "axios";
-import adminNavbar from "@/components/adminNavbar.vue";
-import sidebar from "@/components/sidebar.vue";
-
-export default {
-  name: "AdminDashboard",
-  components: {
-    adminNavbar,
-    sidebar,
-  },
-
-  data() {
-    return {
-      recentCars: [],
-      recentUsers: [], // ✅ ADDED
-
-      stats: {
-        totalCars: 0,
-        availableCars: 0,
-        bookedCars: 0,
-        totalUsers: 0, // ✅ ADDED
-      },
-    };
-  },
-
-  mounted() {
-    this.fetchRecentCars();
-    this.fetchCarStats();
-    this.fetchRecentUsers(); // ✅ ADDED
-  },
-
-  methods: {
-    async fetchRecentCars() {
-      try {
-        const res = await axios.get(
-          "http://localhost:3000/api/cars/recent"
-        );
-        this.recentCars = res.data.cars;
-      } catch (error) {
-        console.error("Failed to fetch recent cars", error);
-      }
-    },
-
-    async fetchCarStats() {
-      try {
-        const res = await axios.get(
-          "http://localhost:3000/api/cars/stats"
-        );
-        this.stats.totalCars = res.data.stats.totalCars;
-        this.stats.availableCars = res.data.stats.availableCars;
-        this.stats.bookedCars = res.data.stats.bookedCars;
-      } catch (error) {
-        console.error("FAILED TO FETCH STATS", error);
-      }
-    },
-
-    // ✅ ADDED
-    async fetchRecentUsers() {
-      try {
-        const res = await axios.get(
-          "http://localhost:3000/api/admin/users/recent",
-          { withCredentials: true }
-        );
-        this.recentUsers = res.data.users;
-        this.stats.totalUsers = res.data.totalUsers;
-      } catch (error) {
-        console.error("FAILED TO FETCH USERS", error);
-      }
-    },
-
-    formatDate(date) {
-      return new Date(date).toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-    },
-  },
-};
-</script>
-
 <template>
 	<div class="admin-wrapper">
 		<adminNavbar />
@@ -128,21 +46,21 @@ export default {
 					<div class="col-md-4 mb-3">
 						<div class="stat-box bg1">
 							<h5>Today Revenue</h5>
-							<h3>₹12,500</h3>
+							<h3>₹{{ revenue.today }}</h3>
 						</div>
 					</div>
 
 					<div class="col-md-4 mb-3">
 						<div class="stat-box bg2">
 							<h5>This Month</h5>
-							<h3>₹2,45,000</h3>
+							<h3>₹{{ revenue.weekly }}</h3>
 						</div>
 					</div>
 
 					<div class="col-md-4 mb-3">
 						<div class="stat-box bg3">
 							<h5>Total Revenue</h5>
-							<h3>₹18,90,000</h3>
+							<h3>₹{{ revenue.total }}</h3>
 						</div>
 					</div>
 				</div>
@@ -212,8 +130,8 @@ export default {
   <tr v-for="user in recentUsers" :key="user._id">
     <td>{{ user.name }}</td>
     <td>{{ user.email }}</td>
-    <td>{{ formatDate(user.createdAt) }}</td>
-    <td>0</td>
+    <td>{{ user.phone || "—" }}</td>
+    <td>{{ user.bookingsCount }}</td>
   </tr>
 
   <tr v-if="recentUsers.length === 0">
@@ -228,7 +146,106 @@ export default {
 		</div>
 	</div>
 </template>
+<script>
+import axios from "axios";
+import adminNavbar from "@/components/adminNavbar.vue";
+import sidebar from "@/components/sidebar.vue";
 
+export default {
+  name: "AdminDashboard",
+  components: {
+    adminNavbar,
+    sidebar,
+  },
+
+  data() {
+    return {
+      recentCars: [],
+      recentUsers: [], 
+
+      stats: {
+        totalCars: 0,
+        availableCars: 0,
+        bookedCars: 0,
+        totalUsers: 0,
+      },
+	  revenue: {
+      today: 0,
+      weekly: 0,
+      monthly: 0,
+      total: 0,
+    },
+    };
+  },
+
+  mounted() {
+    this.fetchRecentCars();
+    this.fetchCarStats();
+    this.fetchRecentUsers(); 
+    this.fetchRevenue();
+
+  },
+
+  methods: {
+    async fetchRecentCars() {
+      try {
+        const res = await axios.get(
+          "http://localhost:3000/api/cars/recent"
+        );
+        this.recentCars = res.data.cars;
+      } catch (error) {
+        console.error("Failed to fetch recent cars", error);
+      }
+    },
+
+    async fetchCarStats() {
+      try {
+        const res = await axios.get(
+          "http://localhost:3000/api/cars/stats"
+        );
+        this.stats.totalCars = res.data.stats.totalCars;
+        this.stats.availableCars = res.data.stats.availableCars;
+        this.stats.bookedCars = res.data.stats.bookedCars;
+      } catch (error) {
+        console.error("FAILED TO FETCH STATS", error);
+      }
+    },
+
+    // ✅ ADDED
+    async fetchRecentUsers() {
+      try {
+        const res = await axios.get(
+          "http://localhost:3000/api/admin/users/recent",
+          { withCredentials: true }
+        );
+        this.recentUsers = res.data.users;
+        this.stats.totalUsers = res.data.totalUsers;
+      } catch (error) {
+        console.error("FAILED TO FETCH USERS", error);
+      }
+    },
+	async fetchRevenue() {
+		try {
+			const res = await axios.get(
+			"http://localhost:3000/api/admin/revenue",
+			{ withCredentials: true }
+			);
+			this.revenue = res.data.revenue;
+		} catch (error) {
+			console.error("FAILED TO FETCH REVENUE", error);
+		}
+		},
+
+    formatDate(date) {
+      return new Date(date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+    },
+  },
+};
+</script>
 
 <style scoped>
 body {
