@@ -13,24 +13,13 @@
 			<form @submit.prevent="login">
 				<div class="form-group">
 					<label class="text-light">Email</label>
-					<input
-						type="email"
-						class="form-control"
-						placeholder="Enter your email"
-						v-model="email"
-						required
-					/>
+					<input type="email" class="form-control" placeholder="Enter your email" v-model="email" required />
 				</div>
 
 				<div class="form-group mt-3">
 					<label class="text-light">Password</label>
-					<input
-						type="password"
-						class="form-control"
-						placeholder="Enter your password"
-						v-model="password"
-						required
-					/>
+					<input type="password" class="form-control" placeholder="Enter your password" v-model="password"
+						required />
 				</div>
 
 				<button type="submit" class="btn btn-primary btn-block mt-4 login-btn">Login</button>

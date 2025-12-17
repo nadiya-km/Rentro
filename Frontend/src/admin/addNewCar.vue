@@ -1,6 +1,5 @@
 <template>
   <div class="add-car-container">
-    <Sidebar/>
 
     <div class="page-header d-flex justify-content-between align-items-center">
       <h3 class="mb-0">Add New Car</h3>
@@ -20,7 +19,7 @@
 
             <div class="form-group col-md-4">
               <label>Model Year</label>
-              <input type="number" v-model="car.year" class="form-control" placeholder="2022">
+              <input type="number" v-model="car.year" class="form-control" placeholder="2022"  required>
             </div>
 
             <div class="form-group col-md-4">
@@ -39,12 +38,12 @@
           <div class="form-row">
             <div class="form-group col-md-3">
               <label>Seats</label>
-              <input type="number" v-model="car.seats" class="form-control" placeholder="5">
+              <input type="number" v-model="car.seats" class="form-control" placeholder="5"  required>
             </div>
 
             <div class="form-group col-md-3">
               <label>Fuel Type</label>
-              <select v-model="car.fuel" class="form-control">
+              <select v-model="car.fuel" class="form-control"  required>
                 <option>Petrol</option>
                 <option>Diesel</option>
                 <option>Electric</option>
@@ -54,7 +53,7 @@
 
             <div class="form-group col-md-3">
               <label>Transmission</label>
-              <select v-model="car.transmission" class="form-control">
+              <select v-model="car.transmission" class="form-control"  required>
                 <option>Automatic</option>
                 <option>Manual</option>
               </select>
@@ -69,7 +68,7 @@
           <!-- Status -->
           <div class="form-group">
             <label>Status</label>
-            <select v-model="car.status" class="form-control">
+            <select v-model="car.status" class="form-control"  required>
               <option>Available</option>
               <option>Booked</option>
               <option>Not Available</option>
@@ -79,12 +78,7 @@
           <!-- Description -->
           <div class="form-group">
             <label>Short Description</label>
-            <textarea
-              v-model="car.description"
-              class="form-control"
-              rows="3"
-              placeholder="Add highlights: AC, Driver, luggage capacity, etc."
-            ></textarea>
+            <textarea v-model="car.description" class="form-control"  rows="3" placeholder="Add highlights: AC, Driver, luggage capacity, etc."></textarea>
           </div>
 
           <!-- Features -->
@@ -181,7 +175,7 @@ methods: {
       formData.append("status", this.car.status);
       formData.append("description", this.car.description);
 
-      // ✅ features is ARRAY → backend expects array/string
+      //  features is ARRAY → backend expects array/string
       this.car.features.forEach((feature) => {
         formData.append("features", feature);
       });
@@ -191,10 +185,8 @@ methods: {
           formData.append("images", file);
         });
 
-
       // API call
-      const res = await axios.post(
-        "http://localhost:3000/api/cars/add",
+      const res = await axios.post( "http://localhost:3000/api/cars/add",
         formData,
         {
           headers: {

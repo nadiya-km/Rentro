@@ -6,12 +6,7 @@
 		</RouterLink>
 
 		<!-- MOBILE TOGGLE -->
-		<button
-			class="navbar-toggler"
-			type="button"
-			data-bs-toggle="collapse"
-			data-bs-target="#navbarContent"
-		>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 

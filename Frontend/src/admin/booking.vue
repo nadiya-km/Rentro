@@ -65,10 +65,7 @@ export default {
 
   async mounted() {
     try {
-      const res = await axios.get(
-        "http://localhost:3000/api/bookings/admin",
-        { withCredentials: true }
-      );
+      const res = await axios.get( "http://localhost:3000/api/bookings/admin", { withCredentials: true }  );
 
       this.bookings = res.data.bookings.map((b) => ({
         id: b._id,

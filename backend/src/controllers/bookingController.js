@@ -2,7 +2,6 @@ const Booking = require("../models/Booking");
 const Car = require("../models/Car");
 
 
-
 exports.createBooking = async (req, res) => {
   try {
     const {
@@ -13,13 +12,19 @@ exports.createBooking = async (req, res) => {
       dropDateTime,
     } = req.body;
 
-    // 👤 Logged-in user from JWT
-    const userId = req.user.id; //  FIXED
+    const userId = req.user.id;
 
     const car = await Car.findById(carId);
-    if (!car) return res.status(404).json({ message: "Car not found" });
+    if (!car) {
+      return res.status(404).json({ message: "Car not found" });
+    }
 
-    // 🧮 Calculate days
+    // 🔒 HARD BLOCK: car already marked booked
+    if (car.status === "Booked") {
+      return res.status(400).json({ message: "Car already booked" });
+    }
+
+    // 🧮 Date validation
     const start = new Date(pickupDateTime);
     const end = new Date(dropDateTime);
 
@@ -27,13 +32,29 @@ exports.createBooking = async (req, res) => {
       return res.status(400).json({ message: "Invalid dates" });
     }
 
+    // 🔴 DATE OVERLAP CHECK (already correct)
+    const existingBooking = await Booking.findOne({
+      car: carId,
+      status: "confirmed",
+      pickupDateTime: { $lt: end },
+      dropDateTime: { $gt: start },
+    });
+
+    if (existingBooking) {
+      return res.status(400).json({
+        message: "Car is already booked for the selected dates",
+      });
+    }
+
+    // 🧮 Calculate days
     const totalDays = Math.ceil(
       (end - start) / (1000 * 60 * 60 * 24)
     );
 
-    // 💰 Calculate revenue
+    // 💰 Calculate amount
     const totalAmount = totalDays * Number(car.price);
 
+    // ✅ CREATE BOOKING
     const booking = await Booking.create({
       user: userId,
       car: carId,
@@ -44,17 +65,23 @@ exports.createBooking = async (req, res) => {
       totalDays,
       pricePerDay: car.price,
       totalAmount,
+      status: "confirmed",
+    });
+
+    // 🔥🔥🔥 MOST IMPORTANT FIX
+    await Car.findByIdAndUpdate(carId, {
+      status: "Booked",
     });
 
     res.status(201).json({
       success: true,
       booking,
     });
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 
 exports.getAllBookings = async (req, res) => {
@@ -72,3 +99,5 @@ exports.getAllBookings = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+

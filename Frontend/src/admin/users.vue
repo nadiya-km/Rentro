@@ -2,7 +2,7 @@
   <div class="admin-wrapper">
 
     <!-- SIDEBAR -->
-    <sidebar class="sidebar-box" />
+    <!-- <sidebar class="sidebar-box" /> -->
 
     <!-- MAIN -->
     <div class="content">
@@ -31,51 +31,41 @@
                   </tr>
                 </thead>
 
-                            <tbody>
-              <tr v-for="(user, index) in users" :key="user._id">
-                <td>{{ index + 1 }}</td>
+                <tbody>
+                  <tr v-for="(user, index) in users" :key="user._id">
+                    <td>{{ index + 1 }}</td>
 
-                <td>{{ user.name }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.phone || "—" }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.phone || "—" }}</td>
 
-                <td>
-                  <span class="badge badge-info">
-                    {{ user.bookingsCount }}
-                  </span>
-                </td>
+                    <td>
+                      <span class="badge badge-info">
+                        {{ user.bookingsCount }}
+                      </span>
+                    </td>
 
 
-                <td>
-                  <span
-                    :class="[
-                      'badge',
-                      user.status === 'Active'
-                        ? 'badge-success'
-                        : 'badge-danger'
-                    ]"
-                  >
-                    {{ user.status || "Active" }}
-                  </span>
-                </td>
+                    <td>
+                      <span :class="[ 'badge', user.status === 'Active' ? 'badge-success' : 'badge-danger' ]">
+                        {{ user.status || "Active" }}
+                      </span>
+                    </td>
 
-                <td>{{ formatDate(user.createdAt) }}</td>
+                    <td>{{ formatDate(user.createdAt) }}</td>
 
-                <td>
+                    <td>
 
-                  <button
-                    class="btn btn-sm btn-danger ml-1"
-                    @click="deleteUser(user)"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
+                      <button class="btn btn-sm btn-danger ml-1" @click="deleteUser(user)">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
 
-              <tr v-if="users.length === 0">
-                <td colspan="8" class="text-center">No users found</td>
-              </tr>
-            </tbody>
+                  <tr v-if="users.length === 0">
+                    <td colspan="8" class="text-center">No users found</td>
+                  </tr>
+                </tbody>
 
 
               </table>
@@ -93,9 +83,9 @@ import axios from "axios";
 import sidebar from "@/components/sidebar.vue";
 
 export default {
-  components: {
-    sidebar,
-  },
+  // components: {
+  //   sidebar,
+  // },
 
   data() {
     return {

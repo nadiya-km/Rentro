@@ -1,5 +1,7 @@
 const Car = require("../models/Car");
 const cloudinary = require("../config/cloudinary");
+const Booking = require("../models/Booking");
+
 exports.addCar = async (req, res) => {
   try {
     const {
@@ -91,20 +93,50 @@ exports.getRecentCars = async (req, res) => {
 //managecars
 
 exports.getAllCars = async (req, res) => {
-
   try {
-    const cars = await Car.find().sort({ createdAt: -1 });
+    const cars = await Car.find();
 
-    res.status(200).json({
-      success: true,
-      cars,
-    });
+    const now = new Date();
 
-  } catch (error) {
+    const carsWithAvailability = await Promise.all(
+      cars.map(async (car) => {
+        // If admin marked Not Available → force it
+        if (car.status === "Not Available") {
+          return {
+            ...car.toObject(),
+            availabilityStatus: "Not Available",
+            nextAvailableAt: null,
+          };
+        }
 
-    console.error("GET CARS ERROR:", error);
-    res.status(500).json({ message: "Server error" });
+        // Find active booking
+        const activeBooking = await Booking.findOne({
+          car: car._id,
+          status: "confirmed",
+          dropDateTime: { $gte: now },
+        }).sort({ dropDateTime: 1 });
 
+        if (activeBooking) {
+          return {
+            ...car.toObject(),
+            availabilityStatus: "Booked",
+            nextAvailableAt: activeBooking.dropDateTime,
+          };
+        }
+
+        // Otherwise available
+        return {
+          ...car.toObject(),
+          availabilityStatus: "Available",
+          nextAvailableAt: null,
+        };
+      })
+    );
+
+    res.json({ cars: carsWithAvailability });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch cars" });
   }
 };
 
