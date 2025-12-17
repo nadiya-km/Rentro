@@ -260,17 +260,27 @@ export default {
       showSuccessModal: false,
     };
   },
-
   computed: {
-    totalDays() {
-      if (!this.booking.pickupDateTime || !this.booking.dropDateTime) return 0;
-      const start = new Date(this.booking.pickupDateTime);
-      const end = new Date(this.booking.dropDateTime);
-      return Math.max(Math.ceil((end - start) / 86400000), 1);
-    },
-    totalPrice() {
-      return this.totalDays * (this.car.price || 0);
-    },
+   totalDays() {
+  if (!this.booking.pickupDateTime || !this.booking.dropDateTime) {
+    return 0;
+  }
+
+  const start = new Date(this.booking.pickupDateTime).getTime();
+  const end = new Date(this.booking.dropDateTime).getTime();
+
+  if (isNaN(start) || isNaN(end) || end <= start) {
+    return 0;
+  }
+
+  const diff = end - start;
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+},
+   totalPrice() {
+  if (!this.totalDays || !this.car.price) return 0;
+  return this.totalDays * Number(this.car.price);
+}
+
   },
 
   async mounted() {
@@ -281,21 +291,30 @@ export default {
   },
 
   methods: {
-    async confirmBooking() {
-      await axios.post(
-        "http://localhost:3000/api/bookings",
-        {
-          carId: this.car._id,
-          ...this.booking,
-          totalPrice: this.totalPrice,
-        },
-        { withCredentials: true }
-      );
+async confirmBooking() {
+  try {
+    const res = await axios.post(
+      "http://localhost:3000/api/bookings",
+      {
+        carId: this.car._id,
+        pickupLocation: this.booking.pickupLocation,
+        dropLocation: this.booking.dropLocation,
+        pickupDateTime: this.booking.pickupDateTime,
+        dropDateTime: this.booking.dropDateTime,
+      },
+      { withCredentials: true }
+    );
+
+    if (res.data.success) {
       this.showSuccessModal = true;
-    },
+    }
+  } catch (error) {
+    alert(error.response?.data?.message || "Booking failed");
+  }
+},
     closeModal() {
       this.showSuccessModal = false;
-      this.$router.push("/my-bookings");
+      this.$router.push("/cars");
     },
     nextImage() {
       this.currentIndex = (this.currentIndex + 1) % this.images.length;
