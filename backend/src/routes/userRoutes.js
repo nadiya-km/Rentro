@@ -1,11 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const { login, register, logout, getProfile } = require('../controllers/authController');
+const {
+	login,
+	register,
+	logout,
+	getProfile,
+	forgotPassword,
+	resetPassword,
+} = require('../controllers/authController');
 const { isAuthenticated } = require('../middleware/auth');
 
 router.post('/register', register);
 router.post('/login', login);
 router.post('/logout', logout);
+// forgot password
+router.post('/forgot-password', forgotPassword);
+
+// reset password
+router.post('/reset-password', resetPassword);
 
 //check
 router.get('/check-auth', isAuthenticated, (req, res) => {
