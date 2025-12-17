@@ -67,7 +67,7 @@ export default {
 					password: this.password,
 				});
 
-				this.$router.push('/profile');
+				this.$router.push('/cars');
 			} catch (err) {
 				alert(err.response?.data?.message || 'Invalid credentials!');
 			}

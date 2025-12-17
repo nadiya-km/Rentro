@@ -1,0 +1,309 @@
+<template>
+  <div class="car-page">
+    <div class="container">
+
+      <div class="glass-layout row">
+
+        <!-- ===== LEFT : CAR DETAILS ===== -->
+        <div class="col-lg-7 left-section">
+
+          <!-- Image -->
+          <div class="image-box">
+            <img :src="images[currentIndex]" />
+            <button class="nav prev" @click="prevImage">‹</button>
+            <button class="nav next" @click="nextImage">›</button>
+          </div>
+
+          <!-- Thumbnails -->
+          <div class="thumbs">
+            <img
+              v-for="(img, i) in images"
+              :key="i"
+              :src="img"
+              :class="{ active: currentIndex === i }"
+              @click="currentIndex = i"
+            />
+          </div>
+
+          <!-- Car Info -->
+          <div class="car-info">
+            <h2>{{ car.name }}</h2>
+
+            <div class="meta">
+              <span>{{ car.transmission }}</span>
+              <span>• {{ car.fuel }}</span>
+              <span>• {{ car.seats }} Seats</span>
+            </div>
+
+            <p class="desc">{{ car.description }}</p>
+
+            <div class="price">
+              ₹{{ car.price }} <span>/ day</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== RIGHT : BOOKING CARD ===== -->
+        <div class="col-lg-5 right-section">
+
+          <div class="booking-card">
+            <h3>Book Your Ride</h3>
+
+            <div class="form-group">
+              <label>Pickup Location</label>
+              <input type="text" v-model="booking.pickupLocation" />
+            </div>
+
+            <div class="form-group">
+              <label>Drop Location</label>
+              <input type="text" v-model="booking.dropLocation" />
+            </div>
+
+            <div class="form-group">
+              <label>Pickup Date & Time</label>
+              <input type="datetime-local" v-model="booking.pickupDateTime" />
+            </div>
+
+            <div class="form-group">
+              <label>Drop Date & Time</label>
+              <input type="datetime-local" v-model="booking.dropDateTime" />
+            </div>
+
+            <div class="summary">
+              <div>
+                <span>Days</span>
+                <strong>{{ totalDays }}</strong>
+              </div>
+              <div>
+                <span>Total</span>
+                <strong>₹{{ totalPrice }}</strong>
+              </div>
+            </div>
+
+            <button class="book-btn" @click="confirmBooking">
+              Confirm Booking
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- SUCCESS MODAL -->
+      <div v-if="showSuccessModal" class="success-overlay">
+        <div class="success-modal">
+          <h2>Booking Confirmed 🎉</h2>
+          <p>Your car has been booked successfully</p>
+          <button @click="closeModal">Done</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</template>
+<style scoped>
+.car-page {
+  min-height: 100vh;
+  padding: 80px 0;
+  background: #0b0f1a;
+  color: white;
+}
+
+.glass-layout {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(24px);
+  border-radius: 26px;
+  padding: 30px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+}
+
+/* LEFT */
+.image-box {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.image-box img {
+  width: 100%;
+  height: 340px;
+  object-fit: contain;
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: white;
+  font-size: 28px;
+  padding: 6px 12px;
+}
+.prev { left: 10px; }
+.next { right: 10px; }
+
+.thumbs {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+.thumbs img {
+  width: 70px;
+  height: 50px;
+  border-radius: 10px;
+  opacity: 0.5;
+  cursor: pointer;
+}
+.thumbs img.active {
+  opacity: 1;
+  border: 2px solid #6c5ce7;
+}
+
+.car-info {
+  margin-top: 20px;
+}
+
+.meta {
+  color: #aab0ff;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.desc {
+  color: #cfd3ff;
+  margin-bottom: 16px;
+}
+
+.price {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+/* RIGHT */
+.booking-card {
+  background: rgba(255,255,255,0.08);
+  padding: 24px;
+  border-radius: 22px;
+}
+
+.booking-card h3 {
+  margin-bottom: 18px;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+.form-group label {
+  font-size: 13px;
+  color: #b8beff;
+}
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255,255,255,0.12);
+  color: white;
+}
+
+.summary {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  font-size: 18px;
+}
+
+.book-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg,#6c5ce7,#5c89ff);
+  border: none;
+  color: white;
+  font-weight: 600;
+}
+
+/* MODAL */
+.success-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.success-modal {
+  background: #151a2d;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+}
+</style>
+<script>
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      currentIndex: 0,
+      images: [],
+      car: {},
+
+      booking: {
+        pickupLocation: "",
+        dropLocation: "",
+        pickupDateTime: "",
+        dropDateTime: "",
+      },
+
+      showSuccessModal: false,
+    };
+  },
+
+  computed: {
+    totalDays() {
+      if (!this.booking.pickupDateTime || !this.booking.dropDateTime) return 0;
+      const start = new Date(this.booking.pickupDateTime);
+      const end = new Date(this.booking.dropDateTime);
+      return Math.max(Math.ceil((end - start) / 86400000), 1);
+    },
+    totalPrice() {
+      return this.totalDays * (this.car.price || 0);
+    },
+  },
+
+  async mounted() {
+    const carId = this.$route.params.id;
+    const res = await axios.get(`http://localhost:3000/api/cars/${carId}`);
+    this.car = res.data.car;
+    this.images = this.car.images.map(i => i.url);
+  },
+
+  methods: {
+    async confirmBooking() {
+      await axios.post(
+        "http://localhost:3000/api/bookings",
+        {
+          carId: this.car._id,
+          ...this.booking,
+          totalPrice: this.totalPrice,
+        },
+        { withCredentials: true }
+      );
+      this.showSuccessModal = true;
+    },
+    closeModal() {
+      this.showSuccessModal = false;
+      this.$router.push("/my-bookings");
+    },
+    nextImage() {
+      this.currentIndex = (this.currentIndex + 1) % this.images.length;
+    },
+    prevImage() {
+      this.currentIndex =
+        (this.currentIndex - 1 + this.images.length) % this.images.length;
+    },
+  },
+};
+</script>

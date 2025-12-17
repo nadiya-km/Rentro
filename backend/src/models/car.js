@@ -56,16 +56,26 @@ const carSchema = new mongoose.Schema(
     },
 
     //  Cloudinary Image Object
-    image: {
-      url: {
-        type: String,
-        required: true, // Cloudinary secure_url
-      },
-      public_id: {
-        type: String, // needed for delete/update
-        required: true,
-      },
+    // image: {
+    //   url: {
+    //     type: String,
+    //     required: true, // Cloudinary secure_url
+    //   },
+    //   public_id: {
+    //     type: String, // needed for delete/update
+    //     required: true,
+    //   },
+    // },
+    images: {
+  type: [
+    {
+      url: String,
+      public_id: String,
     },
+  ],
+  required: true,
+},
+
   },
   {
     timestamps: true,

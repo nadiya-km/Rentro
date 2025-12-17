@@ -1,26 +1,63 @@
 const Car = require("../models/Car");
 const cloudinary = require("../config/cloudinary");
-
 exports.addCar = async (req, res) => {
-  
-  try { 
+  try {
+    const {
+      name,
+      year,
+      category,
+      seats,
+      fuel,
+      transmission,
+      price,
+      status,
+      description,
+      features,
+    } = req.body;
 
-    const { name, year, category, seats, fuel, transmission, price, status, description, features, } = req.body;
-
-    if (!req.files || !req.files.image) {
-      return res.status(400).json({ message: "Image is required" });
+    if (!req.files || !req.files.images) {
+      return res.status(400).json({ message: "At least one image is required" });
     }
 
-    const imageFile = req.files.image;
+    let images = req.files.images;
 
-    const result = await cloudinary.uploader.upload(imageFile.tempFilePath, { folder: "rentro/cars" });
+    // Convert single image to array
+    if (!Array.isArray(images)) {
+      images = [images];
+    }
 
-    const parsedFeatures = Array.isArray(features) ? features : features  ? [features]: [];
+    const uploadedImages = [];
 
-    const car = await Car.create({  name, year, category, seats, fuel, transmission, price, status, description, features: parsedFeatures, image: {
+    for (const file of images) {
+      const result = await cloudinary.uploader.upload(
+        file.tempFilePath,
+        { folder: "rentro/cars" }
+      );
+
+      uploadedImages.push({
         url: result.secure_url,
         public_id: result.public_id,
-      },
+      });
+    }
+
+    const parsedFeatures = Array.isArray(features)
+      ? features
+      : features
+      ? [features]
+      : [];
+
+    const car = await Car.create({
+      name,
+      year,
+      category,
+      seats,
+      fuel,
+      transmission,
+      price,
+      status,
+      description,
+      features: parsedFeatures,
+      images: uploadedImages,
     });
 
     res.status(201).json({
@@ -82,9 +119,12 @@ exports.deleteCar = async (req, res) => {
       return res.status(404).json({ message: "Car not found" });
     }
 
-    // Delete image from Cloudinary
-    await cloudinary.uploader.destroy(car.image.public_id);
-
+    //  Delete ALL images from Cloudinary
+    if (car.images && car.images.length) {
+      for (const img of car.images) {
+        await cloudinary.uploader.destroy(img.public_id);
+      }
+    }
     // Delete car from DB
     await car.deleteOne();
 
@@ -197,3 +237,23 @@ exports.getCarStats = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+//this will redirect to a cars details page when we click on viewdetails button on /cars
+
+exports.getCarById = async (req, res) => {
+  try {
+    const car = await Car.findById(req.params.id);
+
+    if (!car) {
+      return res.status(404).json({ message: "Car not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      car,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+

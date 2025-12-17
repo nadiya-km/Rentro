@@ -31,55 +31,59 @@
                   </tr>
                 </thead>
 
-                <tbody>
-                  <tr v-for="(user, index) in users" :key="index">
-                    <td>{{ index + 1 }}</td>
+                            <tbody>
+              <tr v-for="(user, index) in users" :key="user._id">
+                <td>{{ index + 1 }}</td>
 
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.phone }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone || "—" }}</td>
 
-                    <td>
-                      <span class="badge badge-info">{{ user.bookings }}</span>
-                    </td>
+                <td>
+                  <span class="badge badge-info">0</span>
+                </td>
 
-                    <td>
-                      <span
-                        :class="[
-                          'badge',
-                          user.status === 'Active'
-                            ? 'badge-success'
-                            : 'badge-danger'
-                        ]"
-                      >
-                        {{ user.status }}
-                      </span>
-                    </td>
+                <td>
+                  <span
+                    :class="[
+                      'badge',
+                      user.status === 'Active'
+                        ? 'badge-success'
+                        : 'badge-danger'
+                    ]"
+                  >
+                    {{ user.status || "Active" }}
+                  </span>
+                </td>
 
-                    <td>{{ user.joined }}</td>
+                <td>{{ formatDate(user.createdAt) }}</td>
 
-                    <td>
-                      <button class="btn btn-sm btn-primary" @click="viewUser(user)">
-                        View
-                      </button>
+                <td>
+                  <button class="btn btn-sm btn-primary" @click="viewUser(user)">
+                    View
+                  </button>
 
-                      <button
-                        class="btn btn-sm btn-warning ml-1"
-                        @click="toggleStatus(index)"
-                      >
-                        {{ user.status === 'Active' ? 'Block' : 'Unblock' }}
-                      </button>
+                  <button
+                    class="btn btn-sm btn-warning ml-1"
+                    @click="toggleStatus(user)"
+                  >
+                    {{ user.status === 'Active' ? 'Block' : 'Unblock' }}
+                  </button>
 
-                      <button
-                        class="btn btn-sm btn-danger ml-1"
-                        @click="deleteUser(index)"
-                      >
-                        Delete
-                      </button>
-                    </td>
+                  <button
+                    class="btn btn-sm btn-danger ml-1"
+                    @click="deleteUser(user)"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
 
-                  </tr>
-                </tbody>
+              <tr v-if="users.length === 0">
+                <td colspan="8" class="text-center">No users found</td>
+              </tr>
+            </tbody>
+
 
               </table>
             </div>
@@ -92,48 +96,79 @@
   </div>
 </template>
 <script>
+import axios from "axios";
+import sidebar from "@/components/sidebar.vue";
+
 export default {
+  components: {
+    sidebar,
+  },
+
   data() {
     return {
-      users: [
-        {
-          name: "Arjun Kumar",
-          email: "arjun@gmail.com",
-          phone: "9876543210",
-          bookings: 5,
-          status: "Active",
-          joined: "2025-01-03",
-        },
-        {
-          name: "Sneha R",
-          email: "sneha@gmail.com",
-          phone: "9556432211",
-          bookings: 2,
-          status: "Blocked",
-          joined: "2025-01-15",
-        }
-      ]
+      users: [], // ✅ dynamic users
     };
   },
 
+  mounted() {
+    this.fetchUsers(); // ✅ load users on page load
+  },
+
   methods: {
+    async fetchUsers() {
+      try {
+        const res = await axios.get(
+          "http://localhost:3000/api/admin/users",
+          { withCredentials: true } // 🔐 admin auth
+        );
+        this.users = res.data.users;
+      } catch (error) {
+        console.error("FAILED TO FETCH USERS", error);
+      }
+    },
+
+    formatDate(date) {
+      return new Date(date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+    },
+
     viewUser(user) {
       alert(`Showing details for ${user.name}`);
     },
 
-    toggleStatus(index) {
-      this.users[index].status =
-        this.users[index].status === "Active" ? "Blocked" : "Active";
+    async toggleStatus(user) {
+      try {
+        await axios.put(
+          `http://localhost:3000/api/admin/users/${user._id}/toggle`,
+          {},
+          { withCredentials: true }
+        );
+        this.fetchUsers(); // refresh list
+      } catch (error) {
+        console.error("FAILED TO TOGGLE STATUS", error);
+      }
     },
 
-    deleteUser(index) {
-      if (confirm("Are you sure you want to delete this user?")) {
-        this.users.splice(index, 1);
+    async deleteUser(user) {
+      if (!confirm("Are you sure you want to delete this user?")) return;
+
+      try {
+        await axios.delete(
+          `http://localhost:3000/api/admin/users/${user._id}`,
+          { withCredentials: true }
+        );
+        this.fetchUsers(); // refresh list
+      } catch (error) {
+        console.error("FAILED TO DELETE USER", error);
       }
-    }
-  }
+    },
+  },
 };
 </script>
+
 <style scoped>
 .admin-wrapper {
   display: flex;

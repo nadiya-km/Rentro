@@ -5,7 +5,8 @@
       <div class="row">
 
         <!-- LEFT CAPSULE FILTER BAR -->
-        <div class="col-lg-1 col-md-2 filter-sidebar">
+       <div class="col-lg-2 col-md-3 filter-sidebar">
+
           <div class="filter-glass">
             <button
               v-for="filter in filters"
@@ -19,7 +20,8 @@
         </div>
 
         <!-- RIGHT CONTENT -->
-        <div class="col-lg-11 col-md-10">
+       <div class="col-lg-10 col-md-9">
+
          <!-- TOP PICKUP PANEL -->
           <div class="top-glass">
             <div class="search-box compact">
@@ -34,31 +36,27 @@
           <div class="content-glass">
 
             <!-- CAR GRID -->
-
+          <div class="row">
 
             <!-- CAR GRID -->
-            <div class="row mt-4">
-              <div
-                class="col-xl-3 col-lg-4 col-md-6 mb-4"
-                v-for="car in cars"
-                :key="car.id"
-              >
-                <div class="car-card">
-                  <img :src="car.image" class="car-img" />
+           <div class="col-xl-3 col-lg-4 col-md-6 mb-4" v-for="car in filteredCars" :key="car._id">
+             <div class="car-card">
+               <img   :src="car.images?.[0]?.url || defaultImage" class="car-img" alt="car image"/>
 
-                  <div class="car-info">
-                    <h5>{{ car.name }}</h5>
-                    <p class="type">{{ car.type }}</p>
+                <div class="car-info">
+                <h5>{{ car.name }}</h5>
+                <p class="type">{{ car.category }}</p>
 
-                    <div class="price">
-                      ₹{{ car.price }} <span>/ day</span>
-                    </div>
-
-                    <button class="book-btn">Book Now</button>
-                  </div>
+                <div class="price">
+                  ₹{{ car.price }} <span>/ day</span>
                 </div>
-              </div>
+
+                <button class="book-btn" @click="$router.push(`/cars/${car._id}`)">view details</button>
             </div>
+          </div>
+        </div>
+        </div>
+
 
           </div>
         </div>
@@ -267,54 +265,72 @@
 
 </style>
 <script>
-  import car3 from "@/assets/images/car3.jpg";
+import axios from "axios";
+
 export default {
   name: "CarsPage",
 
   data() {
     return {
       activeFilter: "All Cars",
+
       filters: [
         "All Cars",
         "Available",
         "SUV",
         "Sedan",
         "Hatchback",
-        "Premium",
+        "Luxury",
       ],
 
-      cars: [
-        {
-          id: 1,
-          name: "Ferrari",
-          type: "Premium",
-          price: 725,
-          image: car3,
-        },
-        {
-          id: 2,
-          name: "Rolls Royce",
-          type: "Premium",
-          price: 825,
-          image: "https://i.ibb.co/6t8P0mF/rolls.png",
-        },
-        {
-          id: 3,
-          name: "Porsche",
-          type: "Sedan",
-          price: 725,
-          image: "https://i.ibb.co/w0X5wYk/porsche.png",
-        },
-        {
-          id: 4,
-          name: "BMW",
-          type: "SUV",
-          price: 825,
-          image: "https://i.ibb.co/5YV9Zht/bmw.png",
-        },
-      ],
+      cars: [],        // all cars from backend
+      loading: false,
     };
+  },
+
+  computed: {
+    filteredCars() {
+      if (this.activeFilter === "All Cars") {
+        return this.cars;
+      }
+
+      if (this.activeFilter === "Available") {
+        return this.cars.filter(
+          car => car.status === "Available"
+        );
+      }
+
+      // category filter
+      return this.cars.filter(
+        car => car.category === this.activeFilter
+      );
+    },
+  },
+
+  async mounted() {
+    await this.fetchCars();
+  },
+
+  methods: {
+    async fetchCars() {
+      try {
+        this.loading = true;
+
+        const res = await axios.get(
+          "http://localhost:3000/api/cars"
+        );
+
+        // 🔥 YOUR API RETURNS { success, cars }
+        this.cars = res.data.cars;
+
+      } catch (error) {
+        console.error("Failed to fetch cars", error);
+      } finally {
+        this.loading = false;
+      }
+    },
   },
 };
 </script>
+
 
