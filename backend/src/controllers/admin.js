@@ -2,7 +2,7 @@ const Car = require("../models/car");
 const Admin = require('../models/Admin');
 const jwt = require('jsonwebtoken');
 const User = require("../models/User");
-
+const Booking = require("../models/Booking");
 
 
 exports.adminLogin = async (req, res) => {
@@ -77,15 +77,18 @@ exports.getRecentUsers = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(5);
 
+    const totalUsers = await User.countDocuments({ role: "user" });
+
     res.json({
       success: true,
       users,
+      totalUsers, // ✅ ADD THIS
     });
   } catch (error) {
-    console.error("GET RECENT USERS ERROR:", error);
-    res.status(500).json({ message: "Server error" })
+    res.status(500).json({ message: "Server error" });
   }
 };
+
 
 /*USER STATS */
 exports.getUserStats = async (req, res) => {
@@ -104,33 +107,29 @@ exports.getUserStats = async (req, res) => {
   }
 };
 
-/* =========================
-   BLOCK / UNBLOCK USER
-========================= */
-exports.toggleUserStatus = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
+/*  */
+// exports.toggleUserStatus = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.params.id);
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
 
-    user.status = user.status === "Blocked" ? "Active" : "Blocked";
-    await user.save();
+//     user.status = user.status === "Blocked" ? "Active" : "Blocked";
+//     await user.save();
 
-    res.json({
-      success: true,
-      message: "User status updated",
-    });
-  } catch (error) {
-    console.error("TOGGLE USER ERROR:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+//     res.json({
+//       success: true,
+//       message: "User status updated",
+//     });
+//   } catch (error) {
+//     console.error("TOGGLE USER ERROR:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 
-/* =========================
-   DELETE USER
-========================= */
+/*  delete user*/
 exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -151,3 +150,78 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+/* get revenue */
+
+exports.getRevenueStats = async (req, res) => {
+  try {
+    // start of today
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    // start of week (last 7 days)
+    const weekStart = new Date();
+    weekStart.setDate(weekStart.getDate() - 7);
+
+    // start of month
+    const monthStart = new Date();
+    monthStart.setDate(1);
+    monthStart.setHours(0, 0, 0, 0);
+
+    // common match
+    const matchStage = {
+      status: { $in: ["confirmed", "completed"] },
+    };
+
+    // total revenue
+    const totalRevenue = await Booking.aggregate([
+      { $match: matchStage },
+      { $group: { _id: null, amount: { $sum: "$totalAmount" } } },
+    ]);
+
+    // TODAY REVENUE
+    const todayRevenue = await Booking.aggregate([
+      {
+        $match: {
+          ...matchStage,
+          createdAt: { $gte: todayStart },
+        },
+      },
+      { $group: { _id: null, amount: { $sum: "$totalAmount" } } },
+    ]);
+
+    // WEEKLY REVENUE
+    const weeklyRevenue = await Booking.aggregate([
+      {
+        $match: {
+          ...matchStage,
+          createdAt: { $gte: weekStart },
+        },
+      },
+      { $group: { _id: null, amount: { $sum: "$totalAmount" } } },
+    ]);
+
+    // MONTHLY REVENUE
+    const monthlyRevenue = await Booking.aggregate([
+      {
+        $match: {
+          ...matchStage,
+          createdAt: { $gte: monthStart },
+        },
+      },
+      { $group: { _id: null, amount: { $sum: "$totalAmount" } } },
+    ]);
+
+    res.json({
+      success: true,
+      revenue: {
+        total: totalRevenue[0]?.amount || 0,
+        today: todayRevenue[0]?.amount || 0,
+        weekly: weeklyRevenue[0]?.amount || 0,
+        monthly: monthlyRevenue[0]?.amount || 0,
+      },
+    });
+  } catch (error) {
+    console.error("REVENUE ERROR:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
