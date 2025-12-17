@@ -2,7 +2,7 @@
   <div class="admin-wrapper">
 
     <!-- SIDEBAR -->
-    <sidebar class="sidebar-box" />
+    <!-- <sidebar class="sidebar-box" /> -->
 
     <!-- MAIN CONTENT -->
     <div class="content">
@@ -35,57 +35,42 @@
                   </tr>
                 </thead>
 
-               <tbody>
-  <tr v-for="(car, index) in cars" :key="car._id">
-    <td>{{ index + 1 }}</td>
-    <td>{{ car.name }}</td>
-    <td>{{ car.category }}</td>
-    <td>{{ car.year }}</td>
-    <td>₹{{ car.price }}</td>
-    <td>{{ car.fuel }}</td>
-    <td>{{ car.seats }}</td>
+                <tbody>
+                  <tr v-for="(car, index) in cars" :key="car._id">
+                    <td>{{ index + 1 }}</td>
+                    <td>{{ car.name }}</td>
+                    <td>{{ car.category }}</td>
+                    <td>{{ car.year }}</td>
+                    <td>₹{{ car.price }}</td>
+                    <td>{{ car.fuel }}</td>
+                    <td>{{ car.seats }}</td>
 
-    <td>
-      <span
-        class="badge"
-        :class="
-          car.status === 'Available'
-            ? 'badge-success'
-            : car.status === 'Booked'
-            ? 'badge-warning'
-            : 'badge-danger'
-        "
-      >
-        {{ car.status }}
-      </span>
-    </td>
+                    <td>
+                      <span class="badge" :class="car.status === 'Available' ? 'badge-success' : car.status === 'Booked' ? 'badge-warning' : 'badge-danger'">
+                        {{ car.status }}
+                      </span>
+                    </td>
 
-    <td class="text-muted">—</td>
+                    <td class="text-muted">—</td>
 
-    <td>
-      <img v-if="car.images && car.images.length" :src="car.images[0].url" width="60" class="rounded" alt="car"/>
+                    <td>
 
-<span v-else class="text-muted">No Image</span>
+                      <img v-if="car.images && car.images.length" :src="car.images[0].url" width="60" class="rounded" alt="car" />
 
-    </td>
+                      <span v-else class="text-muted">No Image</span>
 
-    <td>
-      <button class="btn btn-sm btn-info" @click="editCar(car)">
-        Edit
-      </button>
-      <button
-        class="btn btn-sm btn-danger ml-1"
-        @click="deleteCar(car._id)"
-      >
-        Delete
-      </button>
-    </td>
-  </tr>
+                    </td>
 
-  <tr v-if="cars.length === 0">
-    <td colspan="11" class="text-center">No cars found</td>
-  </tr>
-</tbody>
+                    <td>
+                      <button class="btn btn-sm btn-info" @click="editCar(car)">Edit</button>
+                      <button class="btn btn-sm btn-danger ml-1" @click="deleteCar(car._id)">Delete </button>
+                    </td>
+                  </tr>
+
+                  <tr v-if="cars.length === 0">
+                    <td colspan="11" class="text-center">No cars found</td>
+                  </tr>
+                </tbody>
 
 
               </table>
@@ -101,13 +86,13 @@
 
 <script>
 import axios from "axios";
-import sidebar from "@/components/sidebar.vue";
+// import sidebar from "@/components/sidebar.vue";
 
 export default {
   name: "ManageCars",
-  components: {
-    sidebar,
-  },
+  // components: {
+  //   sidebar,
+  // },
 
   data() {
     return {
@@ -134,18 +119,18 @@ export default {
     },
 
 
-   async deleteCar(id) {
-  if (!confirm("Are you sure you want to delete this car?")) return;
+    async deleteCar(id) {
+      if (!confirm("Are you sure you want to delete this car?")) return;
 
-  try {
-    await axios.delete(`http://localhost:3000/api/cars/${id}`);
-    this.cars = this.cars.filter(car => car._id !== id);
-    alert("Car deleted successfully");
-  } catch (error) {
-    console.error("DELETE ERROR:", error);
-    alert("Failed to delete car");
-  }
-}
+      try {
+        await axios.delete(`http://localhost:3000/api/cars/${id}`);
+        this.cars = this.cars.filter(car => car._id !== id);
+        alert("Car deleted successfully");
+      } catch (error) {
+        console.error("DELETE ERROR:", error);
+        alert("Failed to delete car");
+      }
+    }
   },
 };
 </script>
@@ -184,4 +169,3 @@ export default {
   }
 }
 </style>
-

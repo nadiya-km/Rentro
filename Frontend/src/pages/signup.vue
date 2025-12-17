@@ -11,57 +11,31 @@
 			<form @submit.prevent="signup">
 				<div class="form-group">
 					<label class="text-light">Full Name</label>
-					<input
-						type="text"
-						class="form-control"
-						placeholder="Enter your full name"
-						v-model="name"
-						required
-					/>
+					<input type="text" class="form-control" placeholder="Enter your full name" v-model="name"
+						required />
 				</div>
 
 				<div class="form-group mt-3">
 					<label class="text-light">Email</label>
-					<input
-						type="email"
-						class="form-control"
-						placeholder="Enter your email"
-						v-model="email"
-						required
-					/>
+					<input type="email" class="form-control" placeholder="Enter your email" v-model="email" required />
 				</div>
 
 				<div class="form-group mt-3">
 					<label class="text-light">Phone</label>
-					<input
-						type="tel"
-						class="form-control"
-						placeholder="Enter your phone number"
-						v-model="phone"
-						required
-					/>
+					<input type="tel" class="form-control" placeholder="Enter your phone number" v-model="phone"
+						required />
 				</div>
 
 				<div class="form-group mt-3">
 					<label class="text-light">Password</label>
-					<input
-						type="password"
-						class="form-control"
-						placeholder="Create a password"
-						v-model="password"
-						required
-					/>
+					<input type="password" class="form-control" placeholder="Create a password" v-model="password"
+						required />
 				</div>
 
 				<div class="form-group mt-3">
 					<label class="text-light">Confirm Password</label>
-					<input
-						type="password"
-						class="form-control"
-						placeholder="Re-enter password"
-						v-model="confirmPassword"
-						required
-					/>
+					<input type="password" class="form-control" placeholder="Re-enter password"
+						v-model="confirmPassword" required />
 				</div>
 
 				<button type="submit" class="btn btn-primary btn-block mt-4 signup-btn">Sign Up</button>

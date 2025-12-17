@@ -16,13 +16,7 @@
 			<form @submit.prevent="sendResetLink">
 				<div class="form-group">
 					<label class="text-light">Email</label>
-					<input
-						type="email"
-						class="form-control"
-						placeholder="Enter your email"
-						v-model="email"
-						required
-					/>
+					<input type="email" class="form-control" placeholder="Enter your email" v-model="email" required />
 				</div>
 
 				<button type="submit" class="btn btn-primary btn-block mt-4 login-btn" :disabled="loading">

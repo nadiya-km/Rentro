@@ -6,24 +6,20 @@
       <div class="row">
 
         <!-- LEFT CAPSULE FILTER BAR -->
-       <div class="col-lg-2 col-md-3 filter-sidebar">
+        <div class="col-lg-2 col-md-3 filter-sidebar">
 
           <div class="filter-glass">
-            <button
-              v-for="filter in filters"
-              :key="filter"
-              :class="['filter-pill', activeFilter === filter && 'active']"
-              @click="activeFilter = filter"
-            >
+            <button v-for="filter in filters" :key="filter"
+              :class="['filter-pill', activeFilter === filter && 'active']" @click="activeFilter = filter">
               {{ filter }}
             </button>
           </div>
         </div>
 
         <!-- RIGHT CONTENT -->
-       <div class="col-lg-10 col-md-9">
+        <div class="col-lg-10 col-md-9">
 
-         <!-- TOP PICKUP PANEL -->
+          <!-- TOP PICKUP PANEL -->
           <div class="top-glass">
             <div class="search-box compact">
               <input type="text" placeholder="Location" />
@@ -37,26 +33,32 @@
           <div class="content-glass">
 
             <!-- CAR GRID -->
-          <div class="row">
+            <div class="row">
 
-            <!-- CAR GRID -->
-           <div class="col-xl-3 col-lg-4 col-md-6 mb-4" v-for="car in filteredCars" :key="car._id">
-             <div class="car-card">
-               <img   :src="car.images?.[0]?.url || defaultImage" class="car-img" alt="car image"/>
+              <!-- CAR GRID -->
+              <div class="col-xl-3 col-lg-4 col-md-6 mb-4" v-for="car in filteredCars" :key="car._id">
+                <div class="car-card">
+                  <img :src="car.images?.[0]?.url || defaultImage" class="car-img" alt="car image" />
 
-                <div class="car-info">
-                <h5>{{ car.name }}</h5>
-                <p class="type">{{ car.category }}</p>
+                  <div class="car-info">
+                    <h5>{{ car.name }}</h5>
+                    <p class="type">{{ car.category }}</p>
 
-                <div class="price">
-                  ₹{{ car.price }} <span>/ day</span>
+                    <span :class="['availability', car.status === 'Available' ? 'available' : 'unavailable']">
+                      {{ car.status === 'Available' ? 'Available' : 'Not Available' }}
+                    </span>
+
+
+                    <div class="price">
+                      ₹{{ car.price }} <span>/ day</span>
+                    </div>
+
+
+                    <button class="book-btn" @click="$router.push(`/cars/${car._id}`)">view details</button>
+                  </div>
                 </div>
-
-                <button class="book-btn" @click="$router.push(`/cars/${car._id}`)">view details</button>
+              </div>
             </div>
-          </div>
-        </div>
-        </div>
 
 
           </div>
@@ -69,7 +71,7 @@
 </template>
 
 <style scoped>
-  * {
+* {
   font-family: "Inter", sans-serif;
 }
 
@@ -99,10 +101,34 @@
   flex-direction: column;
   gap: 8px;
 }
+
 .filter-pill {
   padding: 8px 12px;
   font-size: 6px;
 }
+
+.availability {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.available {
+  background: rgba(40, 167, 69, 0.2);
+  color: #4cd964;
+  border: 1px solid rgba(40, 167, 69, 0.5);
+}
+
+.unavailable {
+  background: rgba(220, 53, 69, 0.2);
+  color: #ff6b6b;
+  border: 1px solid rgba(220, 53, 69, 0.5);
+}
+
 /* ===== TOP PICKUP PANEL ===== */
 .top-glass {
   margin-bottom: 18px;
@@ -197,7 +223,7 @@
   width: 100%;
   height: 130px;
   object-fit: contain;
-  filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.6));
 }
 
 .car-info h5 {
@@ -262,8 +288,6 @@
     flex-direction: column;
   }
 }
-
-
 </style>
 <script>
 import axios from "axios";
@@ -333,5 +357,3 @@ export default {
   },
 };
 </script>
-
-

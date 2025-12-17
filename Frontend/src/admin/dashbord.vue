@@ -1,7 +1,7 @@
 <template>
 	<div class="admin-wrapper">
-		<adminNavbar />
-		<sidebar />
+		<!-- <adminNavbar />
+		<sidebar /> -->
 
 		<!-- MAIN CONTENT -->
 		<div class="content">
@@ -38,7 +38,7 @@
 				</div>
 			</div>
 
-			<!-- REVENUE SECTION (REPLACED CAR STATUS) -->
+			<!-- REVENUE SECTION  -->
 			<div class="card-box mt-4">
 				<h4><strong>Revenue Overview</strong></h4>
 
@@ -82,35 +82,26 @@
 							</tr>
 						</thead>
 						<tbody>
-	<tr v-for="car in recentCars" :key="car._id">
-		<td>{{ car.name }}</td>
-		<td>{{ car.year }}</td>
-		<td>₹{{ car.price }}</td>
-		<td>
-		<span
-			class="badge"
-			:class="
-			car.status === 'Available'
-				? 'badge-success'
-				: car.status === 'Booked'
-				? 'badge-danger'
-				: 'badge-warning'
-			"
-		>
-			{{ car.status }}
-		</span>
-		</td>
-		<td>{{ formatDate(car.createdAt) }}</td>
-	</tr>
+							<tr v-for="car in recentCars" :key="car._id">
+								<td>{{ car.name }}</td>
+								<td>{{ car.year }}</td>
+								<td>₹{{ car.price }}</td>
+								<td>
+								<span class="badge" :class=" car.status === 'Available'? 'badge-success': car.status === 'Booked'? 'badge-danger': 'badge-warning'">
+									{{ car.status }}
+								</span>
+								</td>
+								<td>{{ formatDate(car.createdAt) }}</td>
+							</tr>
 
-	<tr v-if="recentCars.length === 0">
-		<td colspan="5" class="text-center">No cars added yet</td>
-	</tr>
-							</tbody>
+							<tr v-if="recentCars.length === 0">
+								<td colspan="5" class="text-center">No cars added yet</td>
+							</tr>
+						</tbody>
 
-						</table>
-					</div>
+					</table>
 				</div>
+			</div>
 
 			<!-- USER TABLE (UNCHANGED) -->
 			<div class="card-box mt-4">
@@ -127,47 +118,46 @@
 							</tr>
 						</thead>
 						<tbody>
-  <tr v-for="user in recentUsers" :key="user._id">
-    <td>{{ user.name }}</td>
-    <td>{{ user.email }}</td>
-    <td>{{ user.phone || "—" }}</td>
-    <td>{{ user.bookingsCount }}</td>
-  </tr>
+							<tr v-for="user in recentUsers" :key="user._id">
+								<td>{{ user.name }}</td>
+								<td>{{ user.email }}</td>
+								<td>{{ user.phone || "—" }}</td>
+								<td>{{ user.bookingsCount }}</td>
+							</tr>
 
-  <tr v-if="recentUsers.length === 0">
-    <td colspan="4" class="text-center">No users found</td>
-  </tr>
-                       </tbody>
+							<tr v-if="recentUsers.length === 0">
+								<td colspan="4" class="text-center">No users found</td>
+							</tr>
+						</tbody>
 
-					</table>
+						</table>
+					</div>
 				</div>
-			</div>
-
 		</div>
 	</div>
 </template>
 <script>
 import axios from "axios";
-import adminNavbar from "@/components/adminNavbar.vue";
-import sidebar from "@/components/sidebar.vue";
+// import adminNavbar from "@/components/adminNavbar.vue";
+// import sidebar from "@/components/sidebar.vue";
 
 export default {
   name: "AdminDashboard",
-  components: {
-    adminNavbar,
-    sidebar,
-  },
+//   components: {
+//     adminNavbar,
+//     sidebar,
+//   },
 
   data() {
     return {
       recentCars: [],
-      recentUsers: [], 
+      recentUsers: [], // ✅ ADDED
 
       stats: {
         totalCars: 0,
         availableCars: 0,
         bookedCars: 0,
-        totalUsers: 0,
+        totalUsers: 0, //  ADDED
       },
 	  revenue: {
       today: 0,
@@ -292,9 +282,6 @@ body {
 	background: #8e44ad;
 }
 
-/* ----------------------------------------
-   RESPONSIVE FOR MOBILE (< 768px)
------------------------------------------ */
 @media (max-width: 768px) {
 	/* Sidebar is hidden by default (handled IN sidebar.vue) */
 	.content {

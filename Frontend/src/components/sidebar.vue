@@ -87,6 +87,7 @@ export default {
 
 /* ----------- MOBILE VIEW ----------- */
 @media (max-width: 768px) {
+
 	/* Hide sidebar by default */
 	.sidebar {
 		left: -260px;

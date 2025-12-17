@@ -11,28 +11,48 @@ import addNewCar from '@/admin/addNewCar.vue';
 import userProfile from '@/pages/userProfile.vue';
 import forgotPassword from '../pages/forgotPassword.vue';
 import resetPassword from '../pages/resetPassword.vue';
+import CarDetails from '@/pages/CarDetails.vue';
 const routes = [
-	{ path: '/', component: Home },
+	{
+		path: '/', 
+	    component: Home 
+	},
 	{
 		path: '/login',
 		component: Login,
 		meta: { hideMainNavbar: true },
 	},
-	{ path: '/signup', component: Signup, meta: { hideMainNavbar: true } },
-	{ path: '/cars', component: Cars, meta: { hideMainNavbar: true, showuserNavbar: true } },
+	{ 
+		path: '/signup', 
+		component: Signup, 
+		meta: { hideMainNavbar: true }
+	},
+	{ 
+		path: '/cars', 
+		component: Cars,
+		meta: { hideMainNavbar: true, showuserNavbar: true }
+	},
 	{
 		path: '/user/profile',
 		component: userProfile,
-
-		meta: { requiresUser: true, hideMainNavbar: true, showuserNavbar: true },
+		meta: { 
+			requiresUser: true,
+			hideMainNavbar: true, 
+			showuserNavbar: true 
+		},
 	},
-	//
-
-	// admin
+	{
+		path: "/cars/:id",
+		name: "CarDetails",
+		component: CarDetails,
+	},
 	{
 		path: '/admin/login',
 		component: AdminLogin,
-		meta: { public: true, hideMainNavbar: true },
+		meta: { 
+			public: true,
+			hideMainNavbar: true 
+		},
 	},
 	{
 		path: '/admin/dashboard',

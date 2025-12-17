@@ -16,13 +16,8 @@
 
           <!-- Thumbnails -->
           <div class="thumbs">
-            <img
-              v-for="(img, i) in images"
-              :key="i"
-              :src="img"
-              :class="{ active: currentIndex === i }"
-              @click="currentIndex = i"
-            />
+            <img v-for="(img, i) in images" :key="i" :src="img" :class="{ active: currentIndex === i }"
+              @click="currentIndex = i" />
           </div>
 
           <!-- Car Info -->
@@ -110,11 +105,11 @@
 }
 
 .glass-layout {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(24px);
   border-radius: 26px;
   padding: 30px;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
 }
 
 /* LEFT */
@@ -134,20 +129,27 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   border: none;
   color: white;
   font-size: 28px;
   padding: 6px 12px;
 }
-.prev { left: 10px; }
-.next { right: 10px; }
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
 
 .thumbs {
   display: flex;
   gap: 10px;
   margin-top: 14px;
 }
+
 .thumbs img {
   width: 70px;
   height: 50px;
@@ -155,6 +157,7 @@
   opacity: 0.5;
   cursor: pointer;
 }
+
 .thumbs img.active {
   opacity: 1;
   border: 2px solid #6c5ce7;
@@ -182,7 +185,7 @@
 
 /* RIGHT */
 .booking-card {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   padding: 24px;
   border-radius: 22px;
 }
@@ -194,16 +197,18 @@
 .form-group {
   margin-bottom: 14px;
 }
+
 .form-group label {
   font-size: 13px;
   color: #b8beff;
 }
+
 .form-group input {
   width: 100%;
   padding: 12px;
   border-radius: 12px;
   border: none;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   color: white;
 }
 
@@ -218,7 +223,7 @@
   width: 100%;
   padding: 14px;
   border-radius: 14px;
-  background: linear-gradient(135deg,#6c5ce7,#5c89ff);
+  background: linear-gradient(135deg, #6c5ce7, #5c89ff);
   border: none;
   color: white;
   font-weight: 600;
@@ -228,11 +233,12 @@
 .success-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .success-modal {
   background: #151a2d;
   padding: 30px;
@@ -261,25 +267,25 @@ export default {
     };
   },
   computed: {
-   totalDays() {
-  if (!this.booking.pickupDateTime || !this.booking.dropDateTime) {
-    return 0;
-  }
+    totalDays() {
+      if (!this.booking.pickupDateTime || !this.booking.dropDateTime) {
+        return 0;
+      }
 
-  const start = new Date(this.booking.pickupDateTime).getTime();
-  const end = new Date(this.booking.dropDateTime).getTime();
+      const start = new Date(this.booking.pickupDateTime).getTime();
+      const end = new Date(this.booking.dropDateTime).getTime();
 
-  if (isNaN(start) || isNaN(end) || end <= start) {
-    return 0;
-  }
+      if (isNaN(start) || isNaN(end) || end <= start) {
+        return 0;
+      }
 
-  const diff = end - start;
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
-},
-   totalPrice() {
-  if (!this.totalDays || !this.car.price) return 0;
-  return this.totalDays * Number(this.car.price);
-}
+      const diff = end - start;
+      return Math.ceil(diff / (1000 * 60 * 60 * 24));
+    },
+    totalPrice() {
+      if (!this.totalDays || !this.car.price) return 0;
+      return this.totalDays * Number(this.car.price);
+    }
 
   },
 
@@ -291,27 +297,27 @@ export default {
   },
 
   methods: {
-async confirmBooking() {
-  try {
-    const res = await axios.post(
-      "http://localhost:3000/api/bookings",
-      {
-        carId: this.car._id,
-        pickupLocation: this.booking.pickupLocation,
-        dropLocation: this.booking.dropLocation,
-        pickupDateTime: this.booking.pickupDateTime,
-        dropDateTime: this.booking.dropDateTime,
-      },
-      { withCredentials: true }
-    );
+    async confirmBooking() {
+      try {
+        const res = await axios.post(
+          "http://localhost:3000/api/bookings",
+          {
+            carId: this.car._id,
+            pickupLocation: this.booking.pickupLocation,
+            dropLocation: this.booking.dropLocation,
+            pickupDateTime: this.booking.pickupDateTime,
+            dropDateTime: this.booking.dropDateTime,
+          },
+          { withCredentials: true }
+        );
 
-    if (res.data.success) {
-      this.showSuccessModal = true;
-    }
-  } catch (error) {
-    alert(error.response?.data?.message || "Booking failed");
-  }
-},
+        if (res.data.success) {
+          this.showSuccessModal = true;
+        }
+      } catch (error) {
+        alert(error.response?.data?.message || "Booking failed");
+      }
+    },
     closeModal() {
       this.showSuccessModal = false;
       this.$router.push("/cars");

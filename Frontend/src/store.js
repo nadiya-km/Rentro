@@ -4,91 +4,89 @@ import axios from "axios";
 const store = createStore({
   state() {
     return {
-      user: null,        // logged in user/admin
+      admin: null,
+      user: null,
       isAuthenticated: false,
-
-      users: [],         // admin users list
-      bookings: [],      // admin bookings
-      stats: null,       // dashboard stats
+      role: null, // "admin" | "user"
     };
   },
 
   mutations: {
-    SET_USER(state, user) {
-      state.user = user;
+    SET_AUTH(state, payload) {
       state.isAuthenticated = true;
+      state.role = payload.role;
+
+      if (payload.role === "admin") {
+        state.admin = payload.data;
+        state.user = null;
+      } else {
+        state.user = payload.data;
+        state.admin = null;
+      }
     },
 
     LOGOUT(state) {
+      state.admin = null;
       state.user = null;
       state.isAuthenticated = false;
-    },
-
-    SET_USERS(state, users) {
-      state.users = users;
-    },
-
-    SET_BOOKINGS(state, bookings) {
-      state.bookings = bookings;
-    },
-
-    SET_STATS(state, stats) {
-      state.stats = stats;
+      state.role = null;
     },
   },
 
   actions: {
-    // 🔐 LOGIN
-    async login({ commit }, credentials) {
+    // 🔐 ADMIN LOGIN
+    async adminLogin({ commit }, credentials) {
+      const res = await axios.post(
+        "http://localhost:3000/api/admin/login",
+        credentials,
+        { withCredentials: true }
+      );
+
+      commit("SET_AUTH", {
+        role: "admin",
+        data: res.data.admin,
+      });
+    },
+
+    // 🔐 USER LOGIN
+    async userLogin({ commit }, credentials) {
       const res = await axios.post(
         "http://localhost:3000/api/user/login",
         credentials,
         { withCredentials: true }
       );
 
-      commit("SET_USER", res.data.user);
+      commit("SET_AUTH", {
+        role: "user",
+        data: res.data.user,
+      });
     },
 
-    // 🔓 LOGOUT
-    async logout({ commit }) {
-      await axios.post(
-        "http://localhost:3000/api/user/logout",
-        {},
-        { withCredentials: true }
-      );
+    // 🔓 LOGOUT (ADMIN / USER)
+    async logout({ commit, state }) {
+      if (state.role === "admin") {
+        await axios.post(
+          "http://localhost:3000/api/admin/logout",
+          {},
+          { withCredentials: true }
+        );
+      } else {
+        await axios.post(
+          "http://localhost:3000/api/user/logout",
+          {},
+          { withCredentials: true }
+        );
+      }
+
       commit("LOGOUT");
-    },
-
-    // 👥 ADMIN USERS
-    async fetchUsers({ commit }) {
-      const res = await axios.get(
-        "http://localhost:3000/api/admin/users",
-        { withCredentials: true }
-      );
-      commit("SET_USERS", res.data.users);
-    },
-
-    // 📦 BOOKINGS
-    async fetchBookings({ commit }) {
-      const res = await axios.get(
-        "http://localhost:3000/api/admin/bookings",
-        { withCredentials: true }
-      );
-      commit("SET_BOOKINGS", res.data.bookings);
-    },
-
-    // 📊 DASHBOARD STATS
-    async fetchStats({ commit }) {
-      const res = await axios.get(
-        "http://localhost:3000/api/admin/stats",
-        { withCredentials: true }
-      );
-      commit("SET_STATS", res.data);
     },
   },
 
   getters: {
     isLoggedIn: (state) => state.isAuthenticated,
+    isAdmin: (state) => state.role === "admin",
+    isUser: (state) => state.role === "user",
+    currentAdmin: (state) => state.admin,
     currentUser: (state) => state.user,
   },
 });

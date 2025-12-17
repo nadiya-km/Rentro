@@ -1,6 +1,7 @@
 <template>
 	<div class="admin-login-container">
 		<div class="login-card">
+
 			<div class="text-center mb-4">
 				<img src="@/assets/images/logo.png" alt="Logo" class="logo" />
 				<h3 class="title">Admin Login</h3>
@@ -8,32 +9,22 @@
 			</div>
 
 			<form @submit.prevent="loginAdmin">
+
 				<div class="form-group">
 					<label>Email</label>
-					<input
-						type="email"
-						class="form-control"
-						v-model="email"
-						placeholder="Enter admin email"
-						required
-					/>
+					<input type="email"	class="form-control" v-model="email" placeholder="Enter admin email" required/>
 				</div>
 
 				<div class="form-group mt-3">
 					<label>Password</label>
-					<input
-						type="password"
-						class="form-control"
-						v-model="password"
-						placeholder="Enter password"
-						required
-					/>
+					<input type="password" class="form-control"	v-model="password" placeholder="Enter password" required/>
 				</div>
 
 				<button class="btn btn-dark btn-block mt-4 login-btn">Login</button>
 			</form>
 
 			<p class="text-center mt-3 forgot-text">Forgot password?</p>
+
 		</div>
 	</div>
 </template>
@@ -57,8 +48,6 @@ export default {
 					{ email: this.email, password: this.password },
 					{ withCredentials: true } // imp
 				);
-
-				// alert(res.data.message);
 
 				// Redirect to admin dashboard
 				this.$router.push('/admin/dashboard');
