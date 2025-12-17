@@ -7,40 +7,42 @@
 			</div>
 
 			<!-- Title -->
-			<h3 class="text-center mb-4 text-light">Welcome Back</h3>
+			<h3 class="text-center mb-4 text-light">Reset Password</h3>
 
-			<!-- Form -->
-			<form @submit.prevent="login">
+			<form @submit.prevent="resetPassword">
 				<div class="form-group">
-					<label class="text-light">Email</label>
-					<input
-						type="email"
-						class="form-control"
-						placeholder="Enter your email"
-						v-model="email"
-						required
-					/>
-				</div>
-
-				<div class="form-group mt-3">
-					<label class="text-light">Password</label>
+					<label class="text-light">New Password</label>
 					<input
 						type="password"
 						class="form-control"
-						placeholder="Enter your password"
+						placeholder="Enter new password"
 						v-model="password"
 						required
 					/>
 				</div>
 
-				<button type="submit" class="btn btn-primary btn-block mt-4 login-btn">Login</button>
-
-				<router-link to="/user/forgot-password" class="small forgot">Forgot Password?</router-link>
-
-				<div class="mt-2 text-center text-light small">
-					Don't have an account?
-					<router-link to="/signup" class="signup-link">Sign Up</router-link>
+				<div class="form-group mt-3">
+					<label class="text-light">Confirm Password</label>
+					<input
+						type="password"
+						class="form-control"
+						placeholder="Confirm new password"
+						v-model="confirmPassword"
+						required
+					/>
 				</div>
+
+				<button type="submit" class="btn btn-primary btn-block mt-4 login-btn">
+					Reset Password
+				</button>
+
+				<p v-if="message" class="text-success text-center mt-3">
+					{{ message }}
+				</p>
+
+				<p v-if="error" class="text-danger text-center mt-3">
+					{{ error }}
+				</p>
 			</form>
 		</div>
 	</div>
@@ -50,24 +52,46 @@
 import api from '@/services/api';
 
 export default {
-	name: 'Login',
+	name: 'ResetPassword',
 	data() {
 		return {
-			email: '',
 			password: '',
+			confirmPassword: '',
+			message: '',
+			error: '',
+			token: '',
 		};
 	},
+	created() {
+		this.token = this.$route.query.token;
+
+		if (!this.token) {
+			this.error = 'Invalid or missing reset token';
+		}
+	},
 	methods: {
-		async login() {
+		async resetPassword() {
+			this.error = '';
+			this.message = '';
+
+			if (this.password !== this.confirmPassword) {
+				this.error = 'Passwords do not match';
+				return;
+			}
+
 			try {
-				await api.post('/user/login', {
-					email: this.email,
+				const res = await api.post('/user/reset-password', {
+					token: this.token,
 					password: this.password,
 				});
 
-				this.$router.push('/cars');
+				this.message = res.data.message;
+
+				setTimeout(() => {
+					this.$router.push('/login');
+				}, 2000);
 			} catch (err) {
-				alert(err.response?.data?.message || 'Invalid credentials!');
+				this.error = err.response?.data?.message || 'Password reset failed';
 			}
 		},
 	},
@@ -111,7 +135,7 @@ export default {
 	box-shadow: 0 0 5px #39ff14;
 }
 
-/* Login Button */
+/* Button */
 .login-btn {
 	background: #39ff14;
 	border: none;
@@ -122,15 +146,5 @@ export default {
 
 .login-btn:hover {
 	background: #2dd10f;
-}
-
-/* Links */
-.forgot {
-	color: #bbb;
-}
-
-.signup-link {
-	color: #39ff14;
-	font-weight: 600;
 }
 </style>

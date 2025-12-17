@@ -21,46 +21,40 @@
 		<!-- NAV MENU -->
 		<div class="collapse navbar-collapse justify-content-end" id="adminNavbar">
 			<ul class="navbar-nav">
-				<!-- HOME (Visible Always) -->
-
-				<!-- ADMIN LINKS (ONLY ON SMALL SCREENS) -->
+				<!-- Mobile-only Links -->
 				<li class="nav-item d-lg-none">
-					<router-link class="nav-link" to="/admin/dashboard">
+					<router-link class="nav-link" to="/">
 						<i class="fa fa-home mr-2"></i>
-						Dashboard
+						Home
 					</router-link>
 				</li>
-
 				<li class="nav-item d-lg-none">
-					<router-link class="nav-link" to="/admin/manageCars">
-						<i class="fa fa-car mr-2"></i>
-						Manage Cars
-					</router-link>
-				</li>
-
-				<li class="nav-item d-lg-none">
-					<router-link class="nav-link" to="/admin/addNewCar">
-						<i class="fa fa-plus mr-2"></i>
-						Add New Car
-					</router-link>
-				</li>
-
-				<li class="nav-item d-lg-none">
-					<router-link class="nav-link" to="/admin/users">
-						<i class="fa fa-users mr-2"></i>
-						Users
-					</router-link>
-				</li>
-
-				<li class="nav-item d-lg-none">
-					<router-link class="nav-link" to="/admin/booking">
+					<router-link class="nav-link" to="/cars">
 						<i class="fa fa-book mr-2"></i>
-						Bookings
+						Cars
 					</router-link>
 				</li>
+				<li class="nav-item d-lg-none">
+					<router-link class="nav-link" to="/user/profile">
+						<i class="fa fa-car mr-2"></i>
+						Profile
+					</router-link>
+				</li>
+				<li class="nav-item d-lg-none">
+					<button @click="logout" class="nav-link btn btn-danger px-3 btn-link p-0">
+						<i class="fa fa-sign-out mr-2"></i>
+						Logout
+					</button>
+				</li>
 
-				<!-- LOGOUT -->
-				<li class="nav-item ml-3">
+				<!-- Desktop Buttons -->
+				<li class="nav-item d-none d-lg-block ml-3">
+					<router-link to="/user/profile" class="btn btn-primary px-3">
+						<i class="fa fa-car mr-2"></i>
+						Profile
+					</router-link>
+				</li>
+				<li class="nav-item d-none d-lg-block ml-3">
 					<button @click="logout" class="btn btn-danger px-3">Logout</button>
 				</li>
 			</ul>

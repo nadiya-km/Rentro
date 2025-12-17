@@ -1,7 +1,7 @@
 <template>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3 fixed-top">
 		<!-- LEFT SIDE LOGO -->
-		<a class="navbar-brand d-flex align-items-center" href="#">
+		<a class="navbar-brand d-flex align-items-center" href="/">
 			<img src="@/assets/images/logo2.png" alt="Logo" height="40" class="mr-2" />
 		</a>
 
