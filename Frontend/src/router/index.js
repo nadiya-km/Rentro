@@ -14,6 +14,7 @@ import resetPassword from '../pages/resetPassword.vue';
 import CarDetails from '@/pages/CarDetails.vue';
 import about from '@/pages/about.vue';
 import contact from '@/pages/contact.vue';
+import notFound from '@/pages/notFound.vue';
 
 const routes = [
 	{
@@ -153,6 +154,11 @@ const routes = [
 		meta: {
 			hideMainNavbar: true,
 		},
+	},
+	{
+		path: '/:pathMatch(.*)*',
+		name: 'NotFound',
+		component: notFound,
 	},
 ];
 
