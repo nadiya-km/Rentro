@@ -1,4 +1,4 @@
-const Car = require('../models/car');
+const Car = require('../models/Car');
 const Admin = require('../models/Admin');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
