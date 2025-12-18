@@ -1,5 +1,8 @@
 <template>
 	<div class="admin-wrapper">
+		<!-- <adminNavbar />
+		<sidebar /> -->
+
 		<!-- MAIN CONTENT -->
 		<div class="content">
 			<h3 class="mb-4"><strong>Dashboard Overview</strong></h3>
@@ -155,13 +158,13 @@ export default {
 	data() {
 		return {
 			recentCars: [],
-			recentUsers: [], // ✅ ADDED
+			recentUsers: [],
 
 			stats: {
 				totalCars: 0,
 				availableCars: 0,
 				bookedCars: 0,
-				totalUsers: 0, //  ADDED
+				totalUsers: 0,
 			},
 			revenue: {
 				today: 0,
@@ -177,6 +180,7 @@ export default {
 		this.fetchCarStats();
 		this.fetchRecentUsers();
 		this.fetchRevenue();
+		this.fetchUserStats();
 	},
 
 	methods: {
@@ -218,6 +222,7 @@ export default {
 					withCredentials: true,
 				});
 				this.revenue = res.data.revenue;
+				this.stats.totalBookings = res.data.totalBookings;
 			} catch (error) {
 				console.error('FAILED TO FETCH REVENUE', error);
 			}
@@ -229,6 +234,17 @@ export default {
 				month: 'short',
 				year: 'numeric',
 			});
+		},
+		async fetchUserStats() {
+			try {
+				const res = await axios.get('http://localhost:3000/api/admin/users/stats', {
+					withCredentials: true,
+				});
+
+				this.stats.totalUsers = res.data.stats.totalUsers;
+			} catch (error) {
+				console.error('FAILED TO FETCH USER STATS', error);
+			}
 		},
 	},
 };
@@ -269,12 +285,15 @@ body {
 .bg1 {
 	background: #2e86de;
 }
+
 .bg2 {
 	background: #16a085;
 }
+
 .bg3 {
 	background: #e67e22;
 }
+
 .bg4 {
 	background: #8e44ad;
 }

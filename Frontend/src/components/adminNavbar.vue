@@ -32,14 +32,14 @@
 				</li>
 
 				<li class="nav-item d-lg-none">
-					<router-link class="nav-link" to="/admin/manageCars">
+					<router-link class="nav-link" to="/admin/manage-cars">
 						<i class="fa fa-car mr-2"></i>
 						Manage Cars
 					</router-link>
 				</li>
 
 				<li class="nav-item d-lg-none">
-					<router-link class="nav-link" to="/admin/addNewCar">
+					<router-link class="nav-link" to="/admin/add-car">
 						<i class="fa fa-plus mr-2"></i>
 						Add New Car
 					</router-link>
