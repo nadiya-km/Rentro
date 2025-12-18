@@ -14,12 +14,12 @@
 				Dashboard
 			</router-link>
 
-			<router-link to="/admin/manageCars">
+			<router-link to="/admin/manage-cars">
 				<i class="fa fa-car mr-2"></i>
 				Manage Cars
 			</router-link>
 
-			<router-link to="/admin/addNewCar">
+			<router-link to="/admin/add-car">
 				<i class="fa fa-plus mr-2"></i>
 				Add New Car
 			</router-link>
