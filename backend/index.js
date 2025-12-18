@@ -22,30 +22,34 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cookieParser());
 
-// CORS Setup
-// Allow requests from both local dev and deployed frontend
-const allowedOrigins = [
-	'http://localhost:5173', // local Vue dev
-	process.env.FRONTEND_URL, // deployed frontend URL
-];
+//cors
+// const allowedOrigins = [
+// 	process.env.FRONTEND_URL_LOCAL, // local dev
+// 	process.env.FRONTEND_URL_PROD, // production
+// ];
+// cors
 
-app.use(
-	cors({
-		origin: function (origin, callback) {
-			// allow requests with no origin (like Postman)
-			if (!origin) return callback(null, true);
-			if (allowedOrigins.indexOf(origin) === -1) {
-				const msg =
-					'The CORS policy for this site does not allow access from the specified Origin.';
-				return callback(new Error(msg), false);
-			}
-			return callback(null, true);
-		},
-		credentials: true, // allow cookies / auth headers
-	})
-);
+// app.use(
+// 	cors({
+// 		origin: function (origin, callback) {
+// 			if (!origin) return callback(null, true);
+// 			if (!allowedOrigins.includes(origin)) {
+// 				return callback(new Error('CORS policy does not allow access from this origin'), false);
+// 			}
+// 			return callback(null, true);
+// 		},
+// 		credentials: true, // allow cookies/auth headers
+// 	})
+// );
 // ended
 
+// cors
+app.use(
+	cors({
+		origin: 'http://localhost:5173',
+		credentials: true, // allow cookies / token in headers
+	})
+);
 app.use(
 	fileUpload({
 		useTempFiles: true,
