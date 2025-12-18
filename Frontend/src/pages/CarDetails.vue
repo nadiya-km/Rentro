@@ -326,12 +326,16 @@ export default {
 	},
 
 	async mounted() {
+		console.log('mount');
+		await this.$store.dispatch('fetchUser');
+
 		const carId = this.$route.params.id;
 		const res = await axios.get(`http://localhost:3000/api/cars/${carId}`);
 		this.car = res.data.car;
 		this.images = this.car.images.map((i) => i.url);
-	},
 
+		console.log('Logged in:', this.$store.getters.isLoggedIn);
+	},
 	methods: {
 		async confirmBooking() {
 			try {

@@ -7,6 +7,7 @@ const {
 	getProfile,
 	forgotPassword,
 	resetPassword,
+	isLoggedIn,
 } = require('../controllers/authController');
 const { isAuthenticated } = require('../middleware/auth');
 
@@ -23,7 +24,7 @@ router.post('/reset-password', resetPassword);
 router.get('/check-auth', isAuthenticated, (req, res) => {
 	res.json({ user: req.user });
 });
-
+router.get('/login-status', isAuthenticated, isLoggedIn);
 router.get('/profile', isAuthenticated, (req, res) => {
 	res.json({
 		message: 'User profile',

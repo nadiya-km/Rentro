@@ -14,10 +14,12 @@ import resetPassword from '../pages/resetPassword.vue';
 import CarDetails from '@/pages/CarDetails.vue';
 import about from '@/pages/about.vue';
 import contact from '@/pages/contact.vue';
+
 const routes = [
 	{
 		path: '/',
 		component: Home,
+		meta: { showMainNavbar: true },
 	},
 	{
 		path: '/login',
@@ -40,12 +42,20 @@ const routes = [
 	},
 	{
 		path: '/user/cars/:id',
-		name: 'CarDetails',
+		name: 'UserCarDetails',
 		component: CarDetails,
 		meta: {
 			hideMainNavbar: true,
 			requiresUser: true,
 			showUserNavbar: true,
+		},
+	},
+	{
+		path: '/cars/:id',
+		name: 'PublicCarDetails',
+		component: CarDetails,
+		meta: {
+			requiresUser: false,
 		},
 	},
 	{
@@ -63,15 +73,6 @@ const routes = [
 			requiresUser: true,
 			hideMainNavbar: true,
 			showuserNavbar: true,
-		},
-	},
-
-	{
-		path: '/cars/:id',
-		name: 'CarDetails',
-		component: CarDetails,
-		meta: {
-			requiresUser: false,
 		},
 	},
 
