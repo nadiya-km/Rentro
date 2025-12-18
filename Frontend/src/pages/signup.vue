@@ -11,31 +11,57 @@
 			<form @submit.prevent="signup">
 				<div class="form-group">
 					<label class="text-light">Full Name</label>
-					<input type="text" class="form-control" placeholder="Enter your full name" v-model="name"
-						required />
+					<input
+						type="text"
+						class="form-control"
+						placeholder="Enter your full name"
+						v-model="name"
+						required
+					/>
 				</div>
 
 				<div class="form-group mt-3">
 					<label class="text-light">Email</label>
-					<input type="email" class="form-control" placeholder="Enter your email" v-model="email" required />
+					<input
+						type="email"
+						class="form-control"
+						placeholder="Enter your email"
+						v-model="email"
+						required
+					/>
 				</div>
 
 				<div class="form-group mt-3">
 					<label class="text-light">Phone</label>
-					<input type="tel" class="form-control" placeholder="Enter your phone number" v-model="phone"
-						required />
+					<input
+						type="tel"
+						class="form-control"
+						placeholder="Enter your phone number"
+						v-model="phone"
+						required
+					/>
 				</div>
 
 				<div class="form-group mt-3">
 					<label class="text-light">Password</label>
-					<input type="password" class="form-control" placeholder="Create a password" v-model="password"
-						required />
+					<input
+						type="password"
+						class="form-control"
+						placeholder="Create a password"
+						v-model="password"
+						required
+					/>
 				</div>
 
 				<div class="form-group mt-3">
 					<label class="text-light">Confirm Password</label>
-					<input type="password" class="form-control" placeholder="Re-enter password"
-						v-model="confirmPassword" required />
+					<input
+						type="password"
+						class="form-control"
+						placeholder="Re-enter password"
+						v-model="confirmPassword"
+						required
+					/>
 				</div>
 
 				<button type="submit" class="btn btn-primary btn-block mt-4 signup-btn">Sign Up</button>
@@ -91,58 +117,102 @@ export default {
 </script>
 
 <style scoped>
-/* Background */
+/* RENTRO Background */
 .signup-wrapper {
 	min-height: 100vh;
 	padding: 20px;
-	background: linear-gradient(135deg, #0a0f24, #1f2937, #0d1b2a);
+	background: radial-gradient(ellipse 60% 30% at 20% 5%, rgba(69, 61, 51, 0.4) 0%, transparent 50%),
+		radial-gradient(ellipse 40% 20% at 75% 10%, rgba(54, 48, 37, 0.218) 0%, transparent 60%),
+		linear-gradient(145deg, #2a3f52 0%, #1e2532 40%, #15181f 100%);
+	color: #fdf4e6;
 }
 
-/* Card */
+/* RENTRO Glass Card */
 .signup-card {
 	width: 100%;
 	max-width: 460px;
-	background: rgba(255, 255, 255, 0.05);
-	border-radius: 15px;
-	backdrop-filter: blur(5px);
-	border: 1px solid rgba(255, 255, 255, 0.1);
+	background: rgba(10, 12, 20, 0.95);
+	border-radius: 20px;
+	backdrop-filter: blur(20px);
+	border: 1px solid rgba(254, 215, 165, 0.3);
+	box-shadow: 0 30px 60px rgba(0, 0, 0, 0.65);
 	transition: all 0.3s ease;
+	padding: 2.5rem;
 }
 
 .signup-card:hover {
-	transform: translateY(-3px);
-	box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5);
+	transform: translateY(-6px);
+	box-shadow: 0 40px 80px rgba(255, 120, 70, 0.3);
 }
 
-/* Inputs */
+/* Labels */
+.form-group label {
+	color: #fdf4e6;
+	font-weight: 500;
+	margin-bottom: 8px;
+	display: block;
+}
+
+/* RENTRO Form Inputs */
 .form-control {
-	background: rgba(255, 255, 255, 0.1);
-	border: none;
-	color: white;
+	background: rgba(37, 40, 56, 0.8);
+	border: 1px solid rgba(254, 215, 165, 0.2);
+	color: #fdf4e6;
+	border-radius: 12px;
+	padding: 12px 16px;
+	font-size: 14px;
+	transition: all 0.3s ease;
+	width: 100%;
+}
+
+.form-control::placeholder {
+	color: #d9cfc0;
 }
 
 .form-control:focus {
-	background: rgba(255, 255, 255, 0.15);
-	box-shadow: 0 0 6px #39ff14;
+	background: rgba(37, 40, 56, 1);
+	border-color: #ff9960;
+	box-shadow: 0 0 0 3px rgba(255, 153, 96, 0.2);
 	outline: none;
 }
 
-/* Button */
+/* RENTRO Orange Button */
 .signup-btn {
-	background: #39ff14;
+	background: linear-gradient(135deg, #ff9960, #ff4d30);
 	border: none;
-	color: #000;
+	color: #fff;
 	font-weight: 600;
-	transition: 0.3s;
+	border-radius: 12px;
+	padding: 12px;
+	font-size: 15px;
+	box-shadow: 0 10px 26px rgba(255, 120, 70, 0.4);
+	transition: all 0.3s ease;
+	width: 100%;
 }
 
 .signup-btn:hover {
-	background: #2dd10f;
+	background: linear-gradient(135deg, #ff4d30, #ff9960);
+	transform: translateY(-1px);
+	box-shadow: 0 15px 35px rgba(255, 120, 70, 0.6);
 }
 
 /* Links */
 .login-link {
-	color: #39ff14;
+	color: #ff9960;
 	font-weight: 600;
+	text-decoration: none;
+}
+
+.login-link:hover {
+	color: #ffb98a;
+	text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+	.signup-card {
+		margin: 0 10px;
+		padding: 2rem;
+	}
 }
 </style>

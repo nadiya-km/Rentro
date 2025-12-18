@@ -12,46 +12,75 @@ import userProfile from '@/pages/userProfile.vue';
 import forgotPassword from '../pages/forgotPassword.vue';
 import resetPassword from '../pages/resetPassword.vue';
 import CarDetails from '@/pages/CarDetails.vue';
+import about from '@/pages/about.vue';
+import contact from '@/pages/contact.vue';
 const routes = [
 	{
-		path: '/', 
-	    component: Home 
+		path: '/',
+		component: Home,
 	},
 	{
 		path: '/login',
 		component: Login,
 		meta: { hideMainNavbar: true },
 	},
-	{ 
-		path: '/signup', 
-		component: Signup, 
-		meta: { hideMainNavbar: true }
+	{
+		path: '/signup',
+		component: Signup,
+		meta: { hideMainNavbar: true },
 	},
-	{ 
-		path: '/cars', 
+	{
+		path: '/cars',
 		component: Cars,
-		meta: { hideMainNavbar: true, showuserNavbar: true }
+	},
+	{
+		path: '/user/cars',
+		component: Cars,
+		meta: { requiresUser: true, hideMainNavbar: true, showUserNavbar: true },
+	},
+	{
+		path: '/user/cars/:id',
+		name: 'CarDetails',
+		component: CarDetails,
+		meta: {
+			hideMainNavbar: true,
+			requiresUser: true,
+			showUserNavbar: true,
+		},
+	},
+	{
+		path: '/about',
+		component: about,
+	},
+	{
+		path: '/contact',
+		component: contact,
 	},
 	{
 		path: '/user/profile',
 		component: userProfile,
-		meta: { 
+		meta: {
 			requiresUser: true,
-			hideMainNavbar: true, 
-			showuserNavbar: true 
+			hideMainNavbar: true,
+			showuserNavbar: true,
 		},
 	},
+
 	{
-		path: "/cars/:id",
-		name: "CarDetails",
+		path: '/cars/:id',
+		name: 'CarDetails',
 		component: CarDetails,
+		meta: {
+			requiresUser: false,
+		},
 	},
+
 	{
 		path: '/admin/login',
 		component: AdminLogin,
-		meta: { 
+		meta: {
 			public: true,
-			hideMainNavbar: true 
+			hideMainNavbar: true,
 		},
 	},
 	{
@@ -65,7 +94,7 @@ const routes = [
 		},
 	},
 	{
-		path: '/admin/manageCars',
+		path: '/admin/manage-cars',
 		component: Manage,
 		meta: {
 			requiresAdmin: true,
@@ -75,7 +104,7 @@ const routes = [
 		},
 	},
 	{
-		path: '/admin/addNewCar',
+		path: '/admin/add-car',
 		component: addNewCar,
 		meta: {
 			requiresAdmin: true,

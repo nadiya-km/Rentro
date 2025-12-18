@@ -7,14 +7,12 @@
 		<adminNavbar v-if="$route.meta.showAdminNavbar" />
 
 		<!-- user NAVBAR (visible only on user pages) -->
-		<userNavbar v-if="$route.meta.showuserNavbar" />
+		<userNavbar v-if="$route.meta.showUserNavbar" />
 
 		<!-- Show admin sidebar -->
 		<Sidebar v-if="$route.meta.showAdminSidebar" />
 
 		<router-view />
-
-		
 	</div>
 </template>
 
@@ -34,8 +32,7 @@ export default {
 };
 </script>
 <style>
-  
-  /* body {
+/* body {
    background: linear-gradient(
   180deg,
   #C8C6D0 5%,
