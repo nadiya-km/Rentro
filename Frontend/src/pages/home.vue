@@ -2,7 +2,7 @@
   <div class="page">
 
 
-    <!-- ================= HERO ================= -->
+    <!-- ---------- hero ---------- -->
     <section class="hero-section container my-4">
       <div class="hero-box">
         <div class="hero-overlay"></div>
@@ -20,7 +20,7 @@
       </div>
     </section>
 
-    <!-- ================= HOW IT WORKS ================= -->
+    <!-- ------------ HOW IT WORKS --------------->
     <section class="how-it-works container text-center">
       <h3 class="section-title">HOW IT WORKS</h3>
 
@@ -42,14 +42,14 @@
       </div>
     </section>
 
-    <!-- ================= ABOUT ================= -->
+    <!--- ABOUT -->
     <section class="about-section container my-5">
       <div class="about-box">
         <div class="row align-items-center">
 
           <div class="col-lg-6 mb-4 mb-lg-0 position-relative">
             <div class="image-stack">
-              <img src="https://images.unsplash.com/photo-1549924231-f129b911e442" class="img-large" />
+              <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70" class="img-large" />
               <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70" class="img-small" />
             </div>
           </div>
@@ -100,7 +100,7 @@
       </div>
     </section>
 
-    <!-- ================= WHY ================= -->
+    <!-- --------------->
     <section class="why container text-center">
       <h2>
         Why <span class="highlight">RENTRO</span> is Your Perfect Road Trip Partner
@@ -143,7 +143,7 @@
         <div class="row gy-4">
 
           <div class="col-lg-3">
-            <h4><span class="text-danger">NOVA</span>RIDE</h4>
+            <h4><span class="text-danger">RENT</span>RO</h4>
             <p class="text-muted">
               Experience the ease and convenience of renting a car with Novaride.
             </p>
@@ -167,15 +167,7 @@
             </ul>
           </div>
 
-          <div class="col-lg-3">
-            <h6>Subscribe</h6>
-            <div class="subscribe-box">
-              <input type="email" placeholder="Email..." />
-              <button>
-                <i class="fa-solid fa-arrow-right"></i>
-              </button>
-            </div>
-          </div>
+          
 
         </div>
 
@@ -202,12 +194,19 @@
   font-family: "Poppins", sans-serif;
 }
 
-body {
-  background: linear-gradient(180deg, #e9f7ec 0%, #cfe9d9 40%, #0f2f2a 100%);
-}
+
 
 .page {
-  margin-top: 100px;
+  padding-top: 100px;
+    
+   background: linear-gradient(
+  180deg,
+  #C8C6D0 5%,
+  #232727 35%,
+  #232727 55%,
+  #C8C6D0 75%,
+  #0D1D25 100%
+);
 }
 
 /* HERO */
@@ -362,7 +361,7 @@ body {
 }
 
 .blue {
-  background: linear-gradient(135deg, #ff3c00, #ff6a00);
+  background: linear-gradient(135deg, #292431, #68605a);
   color: white;
 }
 

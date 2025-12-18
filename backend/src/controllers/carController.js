@@ -94,51 +94,41 @@ exports.getRecentCars = async (req, res) => {
 
 exports.getAllCars = async (req, res) => {
   try {
-    const cars = await Car.find();
+    const cars = await Car.find().sort({ createdAt: -1 });
 
-    const now = new Date();
-
-    const carsWithAvailability = await Promise.all(
+    const carsWithReturnDate = await Promise.all(
       cars.map(async (car) => {
-        // If admin marked Not Available → force it
-        if (car.status === "Not Available") {
-          return {
-            ...car.toObject(),
-            availabilityStatus: "Not Available",
-            nextAvailableAt: null,
-          };
+        let returnDate = null;
+
+        if (car.status === "Booked") {
+          const booking = await Booking.findOne({
+            car: car._id,
+            status: "confirmed",
+          }).sort({ dropDateTime: -1 });
+
+          if (booking) {
+            returnDate = booking.dropDateTime;
+          }
         }
 
-        // Find active booking
-        const activeBooking = await Booking.findOne({
-          car: car._id,
-          status: "confirmed",
-          dropDateTime: { $gte: now },
-        }).sort({ dropDateTime: 1 });
-
-        if (activeBooking) {
-          return {
-            ...car.toObject(),
-            availabilityStatus: "Booked",
-            nextAvailableAt: activeBooking.dropDateTime,
-          };
-        }
-
-        // Otherwise available
         return {
           ...car.toObject(),
-          availabilityStatus: "Available",
-          nextAvailableAt: null,
+          returnDate, // ✅ ATTACHED
         };
       })
     );
 
-    res.json({ cars: carsWithAvailability });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to fetch cars" });
+    res.json({
+      success: true,
+      cars: carsWithReturnDate,
+    });
+
+  } catch (error) {
+    console.error("FETCH CARS ERROR:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 //deletecars

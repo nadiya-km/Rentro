@@ -87,9 +87,10 @@
 								<td>{{ car.year }}</td>
 								<td>₹{{ car.price }}</td>
 								<td>
-								<span class="badge" :class=" car.status === 'Available'? 'badge-success': car.status === 'Booked'? 'badge-danger': 'badge-warning'">
-									{{ car.status }}
-								</span>
+									<span class="badge"
+										:class="car.status === 'Available' ? 'badge-success' : car.status === 'Booked' ? 'badge-danger' : 'badge-warning'">
+										{{ car.status }}
+									</span>
 								</td>
 								<td>{{ formatDate(car.createdAt) }}</td>
 							</tr>
@@ -130,9 +131,9 @@
 							</tr>
 						</tbody>
 
-						</table>
-					</div>
+					</table>
 				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -142,98 +143,114 @@ import axios from "axios";
 // import sidebar from "@/components/sidebar.vue";
 
 export default {
-  name: "AdminDashboard",
-//   components: {
-//     adminNavbar,
-//     sidebar,
-//   },
+	name: "AdminDashboard",
+	//   components: {
+	//     adminNavbar,
+	//     sidebar,
+	//   },
 
-  data() {
-    return {
-      recentCars: [],
-      recentUsers: [], // ✅ ADDED
+	data() {
+		return {
+			recentCars: [],
+			recentUsers: [],
 
-      stats: {
-        totalCars: 0,
-        availableCars: 0,
-        bookedCars: 0,
-        totalUsers: 0, //  ADDED
-      },
-	  revenue: {
-      today: 0,
-      weekly: 0,
-      monthly: 0,
-      total: 0,
-    },
-    };
-  },
+			stats: {
+				totalCars: 0,
+				availableCars: 0,
+				bookedCars: 0,
+				totalUsers: 0,
+			},
+			revenue: {
+				today: 0,
+				weekly: 0,
+				monthly: 0,
+				total: 0,
+			},
+		};
+	},
 
-  mounted() {
-    this.fetchRecentCars();
-    this.fetchCarStats();
-    this.fetchRecentUsers(); 
-    this.fetchRevenue();
+	mounted() {
+		this.fetchRecentCars();
+		this.fetchCarStats();
+		this.fetchRecentUsers();
+		this.fetchRevenue();
+		this.fetchUserStats();  
 
-  },
+	},
 
-  methods: {
-    async fetchRecentCars() {
-      try {
-        const res = await axios.get(
-          "http://localhost:3000/api/cars/recent"
-        );
-        this.recentCars = res.data.cars;
-      } catch (error) {
-        console.error("Failed to fetch recent cars", error);
-      }
-    },
+	methods: {
+		async fetchRecentCars() {
+			try {
+				const res = await axios.get(
+					"http://localhost:3000/api/cars/recent"
+				);
+				this.recentCars = res.data.cars;
 
-    async fetchCarStats() {
-      try {
-        const res = await axios.get(
-          "http://localhost:3000/api/cars/stats"
-        );
-        this.stats.totalCars = res.data.stats.totalCars;
-        this.stats.availableCars = res.data.stats.availableCars;
-        this.stats.bookedCars = res.data.stats.bookedCars;
-      } catch (error) {
-        console.error("FAILED TO FETCH STATS", error);
-      }
-    },
-
-    // ✅ ADDED
-    async fetchRecentUsers() {
-      try {
-        const res = await axios.get(
-          "http://localhost:3000/api/admin/users/recent",
-          { withCredentials: true }
-        );
-        this.recentUsers = res.data.users;
-        this.stats.totalUsers = res.data.totalUsers;
-      } catch (error) {
-        console.error("FAILED TO FETCH USERS", error);
-      }
-    },
-	async fetchRevenue() {
-		try {
-			const res = await axios.get(
-			"http://localhost:3000/api/admin/revenue",
-			{ withCredentials: true }
-			);
-			this.revenue = res.data.revenue;
-		} catch (error) {
-			console.error("FAILED TO FETCH REVENUE", error);
-		}
+			} catch (error) {
+				console.error("Failed to fetch recent cars", error);
+			}
 		},
 
-    formatDate(date) {
-      return new Date(date).toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-    },
-  },
+		async fetchCarStats() {
+			try {
+				const res = await axios.get(
+					"http://localhost:3000/api/cars/stats"
+				);
+				this.stats.totalCars = res.data.stats.totalCars;
+				this.stats.availableCars = res.data.stats.availableCars;
+				this.stats.bookedCars = res.data.stats.bookedCars;
+			} catch (error) {
+				console.error("FAILED TO FETCH STATS", error);
+			}
+		},
+
+		// ✅ ADDED
+		async fetchRecentUsers() {
+			try {
+				const res = await axios.get(
+					"http://localhost:3000/api/admin/users/recent",
+					{ withCredentials: true }
+				);
+				this.recentUsers = res.data.users;
+				this.stats.totalUsers = res.data.totalUsers;
+			} catch (error) {
+				console.error("FAILED TO FETCH USERS", error);
+			}
+		},
+		async fetchRevenue() {
+			try {
+				const res = await axios.get(
+					"http://localhost:3000/api/admin/revenue",
+					{ withCredentials: true }
+				);
+				this.revenue = res.data.revenue;
+				this.stats.totalBookings = res.data.totalBookings;
+			} catch (error) {
+				console.error("FAILED TO FETCH REVENUE", error);
+			}
+		},
+
+		formatDate(date) {
+			return new Date(date).toLocaleDateString("en-IN", {
+				day: "2-digit",
+				month: "short",
+				year: "numeric",
+			});
+		},
+		async fetchUserStats() {
+			try {
+				const res = await axios.get(
+					"http://localhost:3000/api/admin/users/stats",
+					{ withCredentials: true }
+				);
+
+				this.stats.totalUsers = res.data.stats.totalUsers;
+			} catch (error) {
+				console.error("FAILED TO FETCH USER STATS", error);
+			}
+		}
+
+	},
 };
 </script>
 
@@ -272,17 +289,21 @@ body {
 .bg1 {
 	background: #2e86de;
 }
+
 .bg2 {
 	background: #16a085;
 }
+
 .bg3 {
 	background: #e67e22;
 }
+
 .bg4 {
 	background: #8e44ad;
 }
 
 @media (max-width: 768px) {
+
 	/* Sidebar is hidden by default (handled IN sidebar.vue) */
 	.content {
 		margin-left: 0 !important;

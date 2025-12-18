@@ -28,9 +28,9 @@
 					</router-link>
 				</li>
 				<li class="nav-item d-lg-none">
-					<router-link class="nav-link" to="/user/profile">
+					<router-link class="nav-link" to="/about">
 						<i class="fa fa-car mr-2"></i>
-						Profile
+						about
 					</router-link>
 				</li>
 				<li class="nav-item d-lg-none">
@@ -41,12 +41,25 @@
 				</li>
 
 				<!-- Desktop Buttons -->
-				<li class="nav-item d-none d-lg-block ml-3">
-					<router-link to="/user/profile" class="btn btn-primary px-3">
+				  <li class="nav-item d-none d-lg-block ">
+					<router-link class="nav-link" to="/">
 						<i class="fa fa-car mr-2"></i>
-						Profile
+						home
 					</router-link>
 				</li>
+				 <li class="nav-item d-none d-lg-block ">
+					<router-link class="nav-link" to="/cars">
+						<i class="fa fa-car mr-2"></i>
+						cars
+					</router-link>
+				</li>
+				 <li class="nav-item d-none d-lg-block ">
+					<router-link class="nav-link" to="/about">
+						<i class="fa fa-car mr-2"></i>
+						about
+					</router-link>
+				</li>
+				
 				<li class="nav-item d-none d-lg-block ml-3">
 					<button @click="logout" class="btn btn-danger px-3">Logout</button>
 				</li>
@@ -81,5 +94,8 @@ export default {
 <style scoped>
 .navbar-brand img {
 	object-fit: cover;
+}
+.navbar {
+	background-color: transparent !important;
 }
 </style>

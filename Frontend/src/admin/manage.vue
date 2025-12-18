@@ -46,16 +46,24 @@
                     <td>{{ car.seats }}</td>
 
                     <td>
-                      <span class="badge" :class="car.status === 'Available' ? 'badge-success' : car.status === 'Booked' ? 'badge-warning' : 'badge-danger'">
+                      <span class="badge"
+                        :class="car.status === 'Available' ? 'badge-success' : car.status === 'Booked' ? 'badge-warning' : 'badge-danger'">
                         {{ car.status }}
                       </span>
                     </td>
 
-                    <td class="text-muted">—</td>
+                    <td>
+                      <span v-if="car.returnDate">
+                        {{ formatDate(car.returnDate) }}
+                      </span>
+                      <span v-else class="text-muted">—</span>
+                    </td>
+
 
                     <td>
 
-                      <img v-if="car.images && car.images.length" :src="car.images[0].url" width="60" class="rounded" alt="car" />
+                      <img v-if="car.images && car.images.length" :src="car.images[0].url" width="60"
+                        class="rounded cursor-pointer" alt="car" @click="openImageModal(car.images)" />
 
                       <span v-else class="text-muted">No Image</span>
 
@@ -74,6 +82,31 @@
 
 
               </table>
+
+              <!-- IMAGE MODAL -->
+              <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                  <div class="modal-content">
+
+                    <div class="modal-header">
+                      <h5 class="modal-title">Car Images</h5>
+                      <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                      </button>
+                    </div>
+
+                    <div class="modal-body">
+                      <div class="row">
+                        <div class="col-md-4 mb-3" v-for="(img, index) in selectedImages" :key="index">
+                          <img :src="img.url" class="img-fluid rounded shadow-sm" alt="car" />
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -97,6 +130,7 @@ export default {
   data() {
     return {
       cars: [],
+      selectedImages: [],
     };
   },
 
@@ -113,11 +147,23 @@ export default {
         console.error("FETCH CARS ERROR:", error);
       }
     },
+    formatDate(date) {
+      return new Date(date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+    },
+
+
+    openImageModal(images) {
+      this.selectedImages = images;
+      $("#imageModal").modal("show");
+    },
 
     editCar(car) {
       this.$router.push(`/admin/edit-car/${car._id}`);
     },
-
 
     async deleteCar(id) {
       if (!confirm("Are you sure you want to delete this car?")) return;
@@ -131,7 +177,8 @@ export default {
         alert("Failed to delete car");
       }
     }
-  },
+  }
+
 };
 </script>
 
@@ -157,6 +204,11 @@ export default {
   width: calc(100% - 240px);
   transition: 0.3s ease-in-out;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
 
 @media (max-width: 768px) {
   .sidebar-box {

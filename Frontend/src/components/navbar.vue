@@ -23,16 +23,9 @@
 				</li>
 
 				<li class="nav-item">
-					<RouterLink class="nav-link text-danger fw-semibold" to="/services">Service</RouterLink>
-				</li>
-
-				<li class="nav-item">
 					<RouterLink class="nav-link" to="/cars">Cars</RouterLink>
 				</li>
 
-				<li class="nav-item">
-					<RouterLink class="nav-link" to="/contact">Contact</RouterLink>
-				</li>
 			</ul>
 
 			<!-- RIGHT SIDE (from Navbar 2) -->
@@ -49,6 +42,7 @@
 export default {
 	name: 'Navbar',
 };
+
 </script>
 
 <style scoped>

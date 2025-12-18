@@ -34,16 +34,5 @@ export default {
 };
 </script>
 <style>
-  
-  /* body {
-   background: linear-gradient(
-  180deg,
-  #C8C6D0 5%,
-  #232727 35%,
-  #232727 55%,
-  #C8C6D0 75%,
-  #0D1D25 100%
-);
 
-  } */
 </style>

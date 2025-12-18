@@ -77,17 +77,32 @@ exports.getRecentUsers = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(5);
 
+    const usersWithBookings = await Promise.all(
+      users.map(async (user) => {
+        const bookingsCount = await Booking.countDocuments({
+          user: user._id,
+        });
+
+        return {
+          ...user.toObject(),
+          bookingsCount,
+        };
+      })
+    );
+
     const totalUsers = await User.countDocuments({ role: "user" });
 
     res.json({
       success: true,
-      users,
-      totalUsers, // ✅ ADD THIS
+      users: usersWithBookings,
+      totalUsers,
     });
   } catch (error) {
+    console.error("RECENT USERS ERROR:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 /*USER STATS */

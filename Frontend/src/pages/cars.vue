@@ -19,16 +19,6 @@
         <!-- RIGHT CONTENT -->
         <div class="col-lg-10 col-md-9">
 
-          <!-- TOP PICKUP PANEL -->
-          <div class="top-glass">
-            <div class="search-box compact">
-              <input type="text" placeholder="Location" />
-              <input type="date" />
-              <input type="date" />
-              <button class="search-btn">Search</button>
-            </div>
-          </div>
-
           <!-- MAIN CONTENT -->
           <div class="content-glass">
 
@@ -165,6 +155,7 @@
 /* ===== RIGHT CONTENT GLASS ===== */
 .content-glass {
   padding: 26px;
+  margin-top: 25px;
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(24px);

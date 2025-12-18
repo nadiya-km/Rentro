@@ -12,6 +12,7 @@ import userProfile from '@/pages/userProfile.vue';
 import forgotPassword from '../pages/forgotPassword.vue';
 import resetPassword from '../pages/resetPassword.vue';
 import CarDetails from '@/pages/CarDetails.vue';
+import about from '@/pages/about.vue';
 const routes = [
 	{
 		path: '/', 
@@ -40,6 +41,11 @@ const routes = [
 			hideMainNavbar: true, 
 			showuserNavbar: true 
 		},
+	},
+	{ 
+		path: '/about', 
+		component: about, 
+		meta: { hideMainNavbar: true }
 	},
 	{
 		path: "/cars/:id",
