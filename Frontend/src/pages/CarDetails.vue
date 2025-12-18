@@ -97,12 +97,8 @@
 .car-page {
 	min-height: 100vh;
 	padding: 80px 0;
-	background: radial-gradient(
-			ellipse 60% 30% at 20% 5%,
-			rgba(254, 215, 165, 0.4) 0%,
-			transparent 50%
-		),
-		radial-gradient(ellipse 40% 20% at 75% 10%, rgba(175, 159, 139, 0.3) 0%, transparent 60%),
+	background: radial-gradient(ellipse 60% 30% at 20% 5%, rgba(69, 61, 51, 0.4) 0%, transparent 50%),
+		radial-gradient(ellipse 40% 20% at 75% 10%, rgba(54, 48, 37, 0.218) 0%, transparent 60%),
 		linear-gradient(145deg, #2a3f52 0%, #1e2532 40%, #15181f 100%);
 	color: #fdf4e6;
 	font-family: 'Poppins', sans-serif;
