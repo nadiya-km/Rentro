@@ -1,12 +1,11 @@
 <template>
 	<div>
-		<!-- MAIN NAVBAR (visible on user pages only) -->
 		<Navbar v-if="!$route.meta.hideMainNavbar" />
 
-		<!-- ADMIN NAVBAR (visible only on admin pages) -->
+		<!-- ADMIN NAVBAR  -->
 		<adminNavbar v-if="$route.meta.showAdminNavbar" />
 
-		<!-- user NAVBAR (visible only on user pages) -->
+		<!-- user  -->
 		<userNavbar v-if="$route.meta.showUserNavbar" />
 
 		<!-- Show admin sidebar -->

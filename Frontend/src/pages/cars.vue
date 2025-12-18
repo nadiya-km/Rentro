@@ -1,6 +1,4 @@
 <template>
-	<UserNavbar v-if="userLoggedIn" />
-	<PublicNavbar v-else />
 	<div class="cars-page">
 		<div class="container-fluid mt-4">
 			<div class="row">
@@ -20,16 +18,6 @@
 
 				<!-- RIGHT CONTENT -->
 				<div class="col-lg-10 col-md-9">
-					<!-- TOP PICKUP PANEL -->
-					<div class="top-glass">
-						<div class="search-box compact">
-							<input type="text" placeholder="Location" />
-							<input type="date" />
-							<input type="date" />
-							<button class="search-btn">Search</button>
-						</div>
-					</div>
-
 					<!-- MAIN CONTENT -->
 					<div class="content-glass">
 						<!-- CAR GRID -->
@@ -65,9 +53,7 @@
 											<span>/ day</span>
 										</div>
 
-										<button class="book-btn" @click="$router.push(`/cars/${car._id}`)">
-											view details
-										</button>
+										<button class="book-btn" @click="goToDetails(car._id)">view details</button>
 									</div>
 								</div>
 							</div>
@@ -409,12 +395,26 @@ export default {
 				this.loading = false;
 			}
 		},
-		async checkLoginStatus() {
+		// async checkLoginStatus() {
+		// 	try {
+		// 		await axios.get('http://localhost:3000/api/user/check-auth', { withCredentials: true });
+		// 		this.userLoggedIn = true;
+		// 	} catch (err) {
+		// 		this.userLoggedIn = false;
+		// 	}
+		// },
+		async goToDetails(carId) {
 			try {
-				await axios.get('http://localhost:3000/api/user/check-auth', { withCredentials: true });
-				this.userLoggedIn = true;
-			} catch (err) {
-				this.userLoggedIn = false;
+				// check login
+				await axios.get('http://localhost:3000/api/user/check-auth', {
+					withCredentials: true,
+				});
+
+				// logged-in user
+				this.$router.push(`/user/cars/${carId}`);
+			} catch {
+				// guest user
+				this.$router.push(`/cars/${carId}`);
 			}
 		},
 	},

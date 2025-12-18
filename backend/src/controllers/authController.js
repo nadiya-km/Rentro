@@ -111,3 +111,6 @@ exports.resetPassword = async (req, res) => {
 
 	res.json({ message: 'Password reset successful' });
 };
+exports.isLoggedIn = (req, res) => {
+	return res.status(200).json({ message: 'success', loginStatus: true });
+};
