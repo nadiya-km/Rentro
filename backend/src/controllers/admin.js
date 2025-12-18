@@ -1,8 +1,9 @@
-const Car = require('../models/Car');
-const Admin = require('../models/Admin');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const Booking = require('../models/Booking');
+const Car = require('../models/Car.js');
+const Admin = require('../models/Admin.js');
+const User = require('../models/User.js');
+const Booking = require('../models/Booking.js');
+
 
 exports.adminLogin = async (req, res) => {
 	try {

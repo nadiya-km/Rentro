@@ -1,5 +1,6 @@
-const Booking = require('../models/Booking');
-const Car = require('../models/Car');
+const Booking = require('../models/Booking.js');
+const Car = require('../models/Car.js');
+
 
 exports.createBooking = async (req, res) => {
 	try {

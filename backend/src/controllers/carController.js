@@ -1,6 +1,6 @@
-const Car = require('../models/Car');
+const Car = require('../models/Car.js');
+const Booking = require('../models/Booking.js');
 const cloudinary = require('../config/cloudinary');
-const Booking = require('../models/Booking');
 
 exports.addCar = async (req, res) => {
 	try {
