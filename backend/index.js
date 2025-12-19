@@ -9,8 +9,7 @@ const userRoutes = require('./src/routes/userRoutes.js');
 const adminRoutes = require('./src/routes/admin');
 const carRoutes = require('./src/routes/carRoutes');
 const adminRecentUser = require('./src/routes/admin');
-// const bookingRoutes =require("./src")
-const bookingRoutes = require('./src/routes/booking'); // 👈 ADD THIS
+const bookingRoutes = require('./src/routes/booking'); 
 
 const path = require('path');
 
